@@ -1,79 +1,54 @@
-open("C:\Users\boll\tmp\DEFLT.slx")
+%open("C:\Users\boll\tmp\DEFLT.slx")
 modelName = gcs;
-blockHandles = find_system(modelName,'LookUnderMasks', 'on','FindAll','on','FollowLinks','on','type','block');
+block_handles = find_system(modelName,'LookUnderMasks','on','FindAll','on','FollowLinks','on','type','block');
 
-for i = 1:length(blockHandles)
-    block = struct;
-    block.handle = blockHandles(i);
-
-    
-    block.type = get_param(block.handle,'BlockType');
-    parents_names = get_param(block.handle,'Parent');
-    block.parent_name = split(parents_names,'/');
-    block.parent_name = string(block.parent_name(length(block.parent_name)));
-    block.hierarchy_depth = count(parents_names,'/');
-    %block.num_inputs = length(get_param(block.handle,'InputSignalNames'));
-    %block.num_outputs = length(get_param(block.handle,'OutputSignalNames'));
-
-
-
-
-    %Space
-    ullr = get_position(block.handle);
-    block.ul = ullr.ul;
-    block.lr = ullr.lr;
-    %location
-    %block.location = get_param(block.handle,'Location');
-    block.orientation = get_param(block.handle,'Orientation');
-
-    %Coloring
-    block.foregroundColor = get_param(block.handle,'ForegroundColor');
-    block.backgroundColor = get_param(block.handle,'BackgroundColor');
-    block.shadow = get_param(block.handle,'DropShadow');
-
-    %Text Appearance
-    block.fontAngle = get_param(block.handle,'FontAngle');
-    block.fontName = get_param(block.handle,'FontName');
-    block.fontSize = get_param(block.handle,'FontSize');
-    block.fontWeight = get_param(block.handle,'FontWeight');
-
-    %Name
-    block.name = string(get_param(block.handle,'Name'));
-    block.namePlacement = get_param(block.handle,'NamePlacement');
-    block.nameLocation = get_param(block.handle,'NameLocation');
-    block.showName = get_param(block.handle,'ShowName');
-    block.hideAutomaticName = get_param(block.handle,'HideAutomaticName');
-
-    %Mask
-    block.mask = get_param(block.handle,'Mask');
-    block.maskDisplay = get_param(block.handle,'MaskDisplay');
-    block.maskType = get_param(block.handle,'MaskType'); 
-    %...............................
-
-    %Version Information if maskType = VERSION_INFO_BLOCK
-    block.versinfo_data = get_param(block.handle,'versinfo_data');
-    block.versinfo_string = get_param(block.handle,'versinfo_string');
-
-    %Dynamic
-    block.selected = get_param(block.handle,'Selected');
-    block.open = get_param(block.handle,'Open');
-    
-
-    %Find Other Parameters
-    %params = get_param(block.handle,'DialogParameters');
-    %params = get_param(block.handle,'IntrinsicDialogParameters');
-    %params = get_param(block.handle,'ObjectParameters');
-
-    %maybe useful?
-    block.tag = get_param(block.handle,'Tag');
-    block.userData = get_param(block.handle,'UserData');
-    block.permissions = get_param(block.handle,'Permissions');
-    block.commented = get_param(block.handle,'Commented');
-
-    elements_properties{i} = block;
+curr_block = find_current(block_handles);
+if curr_block
+    disp(all_info_of_block(curr_block))
 end
-close_system(modelName)
+%close_system(modelName)
 
+
+%returns all (deemed useful) information of a given block
+%other possible parameters may be in:
+%params = get_param(block.Handle,'DialogParameters');
+%params = get_param(block.Handle,'IntrinsicDialogParameters');
+%params = get_param(block.Handle,'ObjectParameters');
+%
+%lots of parameters in Masks left untouched
+function block = all_info_of_block(handle)
+    block = struct;
+    block.Handle = handle;
+    param_list = ["BlockType","Parent","Orientation","ForegroundColor","BackgroundColor","DropShadow","FontAngle","FontName","FontSize","FontWeight","Name","NamePlacement","NameLocation","ShowName","HideAutomaticName","Mask","MaskDisplay","MaskType","versinfo_data","versinfo_string","Selected","Open","Tag","UserData","Commented","Permission"];
+
+    for p=1:numel(param_list)
+        param = param_list(p);
+        try
+            next_value = get_param(block.Handle,param);
+            block.(param) = next_value;
+        catch
+        end
+    end
+    
+    
+    block.HierarchyDepth = count(block.Parent,'/');
+    ullr = get_position(block.Handle);
+    block.UL = ullr.ul;
+    block.LR = ullr.lr;
+end
+
+%returns the block handle of model, of the block (if it exists), which is 
+%currently selected by the user
+function current = find_current(handles)
+    for i = 1:length(handles)
+        block = handles(i);
+        if strcmp(get_param(block,'Selected'),'on')
+            current = block;
+            return
+        end
+    end
+    current = [];
+end
 
 
 %returns position of upper left (ul) and lower right (lr)
