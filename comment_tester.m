@@ -1,22 +1,9 @@
-%open("C:\Users\boll\tmp\DEFLT.slx")
-open("C:\svns\simucomp2\code\commenter\tmp.slx")
+open("C:\Users\boll\tmp\DEFLT.slx")
+%open("C:\svns\simucomp2\code\commenter\tmp.slx")
 modelName = "DEFLT";
-%handles = find_system(modelName,'LookUnderMasks','on','RegExp','on','FindAll','on','FollowLinks','on','Type','annotation|block');
-handles = find_system("tmp",'LookUnderMasks','on','RegExp','on','FindAll','on','FollowLinks','on');
-
-for h=1:numel(handles)
-    disp(all_info_of_block(handles(h)))
-end
+handles = find_system(modelName,'LookUnderMasks','on','RegExp','on','FindAll','on','FollowLinks','on','Type','annotation|block');
 
 
-% first = 10;
-% unique = fields(get_param(handles(first),'ObjectParameters'));
-% for u = 1:numel(unique)
-%     try
-%         fprintf(unique{u} + ": " + get_param(handles(first),unique{u}) + "\n")
-%     catch
-%     end
-% end
 
 curr_block = find_current(handles);
 if curr_block
@@ -152,10 +139,6 @@ end
 %https://www.mathworks.com/help/simulink/ug/annotations.html
 %
 
-%Simulink Report Generator
-%https://www.mathworks.com/products/simulink-report-generator.html
+%Model/Block Description
 %
-
-%Viewmark (bookmark views of a model)
-%https://www.mathworks.com/help/simulink/ug/use-viewmarks-to-save-views-of-models.html
-%
+%Main Parameter: Description
