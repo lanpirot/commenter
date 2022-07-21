@@ -83,7 +83,7 @@ classdef enrich_models_container
                 block.HierarchyDepth = block.HierarchyDepth + 1;
             end
             try
-                ullr = get_position(block.Handle);
+                ullr = enrich_models_container.get_position(block.Handle);
                 block.UL = ullr.ul;
                 block.LR = ullr.lr;
             catch
