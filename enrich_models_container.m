@@ -3,28 +3,46 @@ classdef enrich_models_container
     methods(Static)
         C = Constants(~);
 
-        function en = ANNOTATIONS(~, model)
-            handles = find_system(model,'LookUnderMasks','on','FindAll','on','FollowLinks','on','Type','annotation');
-            en = struct.empty;
-            for h=1:numel(handles)
-                en(end+1).ANNOTATION = enrich_models_container.all_info_of_block(handles(h));
-            end
-        end
-
-        function en = DOCBLOCKS(~, model)
+        function en = BLOCKS_WITH_DOCU(~, model)
             handles = find_system(model,'LookUnderMasks','on','FindAll','on','FollowLinks','on','Type','block');
             en = struct.empty;
+
             for h=1:numel(handles)
                 try
                     handle = handles(h);
-                    ud = get_param(handle,'UserData');
-                    if isempty(ud) || strcmp(ud.content,'')
-                        continue
+
+                    docu_params = ["Description","MaskdisplayString","versinfo_string","Text","UserData"];
+
+                    if strcmp(get_param(handle,'BlockType'),'Annotation')
+                        disp("")
                     end
-                    en(end+1).DOCBLOCK = enrich_models_container.all_info_of_block(handle);
+
+                    contains_documentation = false;
+                    for p=1:numel(docu_params)
+                        param = docu_params(p);
+                        try
+                            next_value = get_param(handle,param);
+                            if ~isempty(next_value) && ~strcmp(next_value,"")
+                                contains_documentation = true;
+                                break
+                            end
+                        catch
+                        end
+                    end
+                    if contains_documentation
+                        if isempty(en)
+                            en = enrich_models_container.all_info_of_block(handle);
+                        else
+                            en(end+1) = enrich_models_container.all_info_of_block(handle);
+                        end
+                    end
                 catch
                 end
             end
+        end
+
+        function en = DESCRIPTION(~, model)
+            en = get_param(model,'Description');
         end
 
         %returns all (deemed useful) information of a given block
@@ -35,16 +53,26 @@ classdef enrich_models_container
         %
         %lots of parameters in Masks not yet included
         function block = all_info_of_block(handle)
+            global C
             block = struct;
             block.Handle = handle;
-            param_list = ["Type","BlockType","Description","Parent","Orientation","ForegroundColor","BackgroundColor","DropShadow","FontAngle","FontName","FontSize","FontWeight","Name","NamePlacement","NameLocation","ShowName","HideAutomaticName","Mask","MaskDisplay","MaskDisplayString","MaskType","versinfo_data","versinfo_string","Selected","Open","Tag","UserData","Commented","Permission","Text"];
+            param_list = C.param_list;
         
             for p=1:numel(param_list)
                 param = param_list(p);
                 try
                     next_value = get_param(block.Handle,param);
-                    block.(param) = next_value;
+                    if isempty(next_value) || strcmp(next_value,'')
+                        block.(param) = "";
+                    else
+                        block.(param) = next_value;
+                        continue
+                    end
+                    if ~strcmp(next_value.content,'')
+                        block.(param) = next_value.content;
+                    end
                 catch
+                    block.(param) = "";
                 end
             end
             

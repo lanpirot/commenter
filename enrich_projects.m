@@ -7,8 +7,8 @@ function enrich_projects(C)
     global hfs
     hfs = Helper_functions;
     en_tuples = {
-        C.NUM_MODELS, @en_fs.NUM_MODELS,...
-        C.PROJECT_LENGTH, @en_fs.PROJECT_LENGTH};%,...
+        C.NUM_MODELS, @en_fs.NUM_MODELS};
+        %C.PROJECT_LENGTH, @en_fs.PROJECT_LENGTH};%,...
         %C.PROJECT_NAME_DUPLICATES, @en_fs.PROJECT_NAME_DUPLICATES};
 
     all_info = jsondecode(fileread(C.all_models_json));

@@ -4,6 +4,7 @@ classdef Constants
         MIN = 0
         MAX = 0
         all_models_json = "all_models.json"
+        all_projects = []
     end
     properties(Constant = true)
         
@@ -17,7 +18,7 @@ classdef Constants
         
         NONE = ""
         OVERWRITE = Constants.NO
-        FORCE_OVERWRITE = Constants.DOCBLOCKS
+        FORCE_OVERWRITE = Constants.BLOCKS_WITH_DOCU
         
         
         
@@ -60,10 +61,11 @@ classdef Constants
 
 
         %comment properties
-        ANNOTATIONS = "annotations"
-        NUM_ANNOTATIONS = "number_of_annotations"
-        DOCBLOCKS = "docblocks"
-        NUM_DOCBLOCKS = "number_of_docblocks"
+        BLOCKS_WITH_DOCU = "blocks_with_documentation"
+        DESCRIPTION = "model_description"
+        param_list = ["Type","BlockType","Description","Parent","Orientation","ForegroundColor","BackgroundColor","DropShadow","FontAngle","FontName","FontSize","FontWeight","Name","NamePlacement","NameLocation","ShowName","HideAutomaticName","Mask","MaskDisplay","MaskDisplayString","MaskType","versinfo_data","versinfo_string","Selected","Open","Tag","UserData","Commented","Permission","Text"]
+
+
         
         
         BUS_OUTPORT_ANALYSIS = "outportbus_info"
@@ -87,6 +89,5 @@ classdef Constants
         project_description = "project-description.json"
         
         dir_separator = system_constants.dir_separator
-        all_projects_path = system_constants.all_projects_path
     end
 end

@@ -5,10 +5,9 @@ function create_json(C)
     global C
     hfs = Helper_functions;
 
-    all_projects = find_all_projects(C.all_projects_path);
-    all_projects = all_projects(C.MIN:C.MAX);
+    all_projects = C.all_projects;
     
-    all_projects_info = struct(C.P_NUM,{},C.PROJECT_NAME,{},C.DOWNLOAD_URL,{},C.PROJECT_PATH,{},C.MODELS,{});
+    all_projects_info = struct(C.P_NUM,{},C.PROJECT_PATH,{},C.MODELS,{});
 
     m = 1;
     for j = 1:min(C.MAX,length(all_projects))
@@ -39,13 +38,10 @@ function project_info = gather_project_data(p, p_folder, p_name)
     global C
     fprintf("Creating project %i\n", p)
     project_path = p_folder + C.dir_separator + p_name;
-    project_data = jsondecode(fileread(project_path + C.dir_separator + C.project_description));
 
     project_info = struct;
     project_info.(C.P_NUM) = p;
-    project_info.(C.PROJECT_NAME) = project_data.(C.old_PROJECT_NAME);
     project_info.(C.PROJECT_PATH) = project_path;
-    project_info.(C.DOWNLOAD_URL) = project_data.(C.old_DOWNLOAD_URL);
 end
 
 function model_info = gather_model_data(m, model_file, project_path)
@@ -119,21 +115,6 @@ function checksum = get_commit_checksum(project_path, commit_id, rel_path)
         Helper_functions.mysystem(project_path, "git --no-pager checkout -f master");
     catch ME
     end
-end
-
-function project_json=find_project_json(model_path)
-    %find the project-description.json file, maybe try parent directories
-    global C
-    project_json = struct('a',{});
-    while isempty(project_json)
-        split_mP = split(model_path,C.dir_separator);
-        model_path = strjoin(split_mP(1:length(split_mP)-1),C.dir_separator);
-        project_json = dir(fullfile(model_path, C.project_description));
-        if isempty(model_path)
-            return  %something went wrong
-        end
-    end
-    project_json = strcat(project_json.folder, C.dir_separator, project_json.name);
 end
 
 function file_list=find_all_models(root_dir)
