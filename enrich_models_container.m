@@ -4,7 +4,8 @@ classdef enrich_models_container
         C = Constants(~);
 
         function en = BLOCKS_WITH_DOCU(~, model)
-            handles = find_system(model,'LookUnderMasks','on','FindAll','on','FollowLinks','on','Type','block');
+            handles = [find_system(model,'LookUnderMasks','on','FindAll','on','FollowLinks','on','Type','block'); find_system(model,'LookUnderMasks','on','FindAll','on','FollowLinks','on','Type','annotation')];
+
             en = struct.empty;
 
             for h=1:numel(handles)
@@ -13,7 +14,7 @@ classdef enrich_models_container
 
                     docu_params = ["Description","MaskdisplayString","versinfo_string","Text","UserData"];
 
-                    if strcmp(get_param(handle,'BlockType'),'Annotation')
+                    if strcmp(get_param(handle,'Type'),'annotation')
                         disp("")
                     end
 
