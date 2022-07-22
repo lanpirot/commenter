@@ -9,7 +9,7 @@ function complete_script(min, max)
         max = length(folder_list);
         fprintf("No parameters given. Using default values for min: %i and max: %i.\n", min, max)
     else
-        folder_list = folder_list(min, max);
+        folder_list = folder_list(min:max);
     end
 
     fprintf("Starting computation for %i projects.\n",max-min+1)
