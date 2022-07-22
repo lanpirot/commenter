@@ -2,14 +2,17 @@ function complete_script(min, max)
     warning('off','all')
     format compact
 
-    pwd
-
+    
+    folder_list = find_all_projects(system_constants.all_projects_path1, system_constants.all_projects_path2);
     if  ~exist('min','var') || ~exist('max','var')
-        folder_list = find_all_projects(system_constants.all_projects_path1, system_constants.all_projects_path2);
         min = 1;
         max = length(folder_list);
         fprintf("No parameters given. Using default values for min: %i and max: %i.\n", min, max)
+    else
+        folder_list = folder_list(min, max);
     end
+
+    fprintf("Starting computation for %i projects.\n",max-min+1)
     
     global C
     C = Helper_functions.create_constants(min, max);
