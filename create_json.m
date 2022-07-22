@@ -119,11 +119,6 @@ end
 
 function file_list=find_all_models(root_dir)
     global C
-    Helper_functions.mysystem(root_dir, "git --no-pager checkout -f master");
+    %Helper_functions.mysystem(root_dir, "git --no-pager checkout -f master");
     file_list = vertcat(dir(fullfile(root_dir, strcat('**',C.dir_separator,'*.mdl'))),dir(fullfile(root_dir, strcat('**',C.dir_separator,'*.slx'))));
-end
-
-function file_list=find_all_projects(root_dir)
-    file_list = dir(root_dir);
-    file_list = file_list(3:end);
 end
