@@ -73,9 +73,9 @@ function en = en_template(en_tuple, project, model)
         end
         close_system(model_name_no_ending)
     catch ME
-        disp(ME)
-        en = C.ERROR;
         try
+            disp(ME)
+            en = C.ERROR;
             close_system(model_name_no_ending)
         catch ME
             disp(ME)
