@@ -4,7 +4,7 @@ function complete_script(mini, maxi)
 
     
     folder_list = find_all_projects(system_constants.all_projects_path1, system_constants.all_projects_path2);
-    if  ~exist('min','var') || ~exist('max','var')
+    if  ~exist('mini','var') || ~exist('maxi','var')
         mini = 1;
         maxi = length(folder_list);
         fprintf("No parameters given. Using default values for min: %i and max: %i.\n", mini, maxi)
