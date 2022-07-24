@@ -6,6 +6,7 @@ function enrich_models(C)
     en_fs = enrich_models_container;
     global hfs
     hfs = Helper_functions;
+
     en_tuples = {
         C.IS_LOADABLE,@en_fs.IS_LOADABLE,...
         C.BLOCKS_WITH_DOCU,@en_fs.BLOCKS_WITH_DOCU,...
@@ -39,7 +40,15 @@ function all_projects = enrich(all_projects, en_tuple)
             model = project_models(i);
             warning('off','all');
             
+            fprintf("Enriching model %i with %s\n", model.(C.M_NUM), new_field)
             all_projects(j).(C.MODELS)(i).(new_field) = en_template(en_tuple, all_projects(j), model);
+
+
+
+            %remove for speed
+            Helper_functions.saveit(all_projects, C.all_models_json)
+
+            fprintf("Done with model %i.\n", model.(C.M_NUM))
         end
     end
 return
@@ -62,7 +71,7 @@ function en = en_template(en_tuple, project, model)
         return
     end
     %otherwise actually analyze and enrich
-    fprintf("Enriching model %i with %s\n", model.(C.M_NUM), field)
+    
     try
         load_system(project.(C.PROJECT_PATH)+C.dir_separator+model.(C.REL_PROJ_PATH));
         model_name_no_ending = gcs;

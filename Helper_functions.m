@@ -45,11 +45,11 @@ classdef Helper_functions
                 file_path = C.all_models_json;
             end
             allProjects = jsondecode(fileread(file_path));
-            jsonText = jsonencode(allProjects);
-            jsonText = prettyjson(jsonText);
+            json_text = jsonencode(allProjects);
+            json_text = prettyjson(json_text);
 
             fid = fopen(file_path, 'w');
-            fprintf(fid, '%s', jsonText);
+            fprintf(fid, '%s', json_text);
             fclose(fid);
         end
         

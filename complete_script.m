@@ -18,8 +18,8 @@ function complete_script(min, max)
     C = Helper_functions.create_constants(min, max);
     C.all_projects = folder_list;
     
-    create_json(C)
-    enrich_projects(C)
+    %create_json(C)
+    %enrich_projects(C)
     enrich_models(C)
     %analyze_json(C)
     fprintf("All done for projects %i-%i\n",min,max);
