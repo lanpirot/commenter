@@ -1,28 +1,30 @@
-function complete_script(min, max)
+function complete_script(mini, maxi)
     warning('off','all')
     format compact
 
     
     folder_list = find_all_projects(system_constants.all_projects_path1, system_constants.all_projects_path2);
     if  ~exist('min','var') || ~exist('max','var')
-        min = 1;
-        max = length(folder_list);
-        fprintf("No parameters given. Using default values for min: %i and max: %i.\n", min, max)
+        mini = 1;
+        maxi = length(folder_list);
+        fprintf("No parameters given. Using default values for min: %i and max: %i.\n", mini, maxi)
     else
-        folder_list = folder_list(min:max);
+        mini = max(mini, 1);
+        maxi = min(maxi, length(folder_list));
+        folder_list = folder_list(mini:maxi);
     end
 
-    fprintf("Starting computation for %i projects.\n",max-min+1)
+    fprintf("Starting computation for %i projects.\n",maxi-mini+1)
     
     global C
-    C = Helper_functions.create_constants(min, max);
+    C = Helper_functions.create_constants(mini, maxi);
     C.all_projects = folder_list;
     
-    create_json(C)
-    enrich_projects(C)
+    %create_json(C)
+    %enrich_projects(C)
     enrich_models(C)
     %analyze_json(C)
-    fprintf("All done for projects %i-%i\n",min,max);
+    fprintf("All done for projects %i-%i\n",mini,maxi);
 end
 
 %combine all folders (projects) except "." and ".." of two directories 
