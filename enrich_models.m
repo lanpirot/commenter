@@ -15,7 +15,7 @@ function enrich_models(C)
         C.NUM_BLOCKS,@en_fs.NUM_BLOCKS,...
         C.NUM_SUBSYSTEMS,@en_fs.NUM_SUBSYSTEMS};
 
-    all_info = jsondecode(fileread(C.all_models_json));
+    %all_info = jsondecode(fileread(C.all_models_json));
     all_info = jsondecode("all_models1-2827.json");
 
 
