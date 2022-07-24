@@ -16,6 +16,9 @@ function enrich_models(C)
         C.NUM_SUBSYSTEMS,@en_fs.NUM_SUBSYSTEMS};
 
     all_info = jsondecode(fileread(C.all_models_json));
+    all_info = jsondecode("all_models1-2827.json");
+
+
     all_projects = all_info.(C.PROJECTS);
 
     for i = 1:2:length(en_tuples)
