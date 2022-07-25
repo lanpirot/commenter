@@ -113,10 +113,11 @@ end
 
 %Simulink File Meta Data
 %In: Property Inspector (or Model Properties)
+%Main Parameter: (Model) Description
 
 %Block, Parameter, Bus, Signal
 %https://www.mathworks.com/help/simulink/ug/block-properties-dialog-box.html
-%Main Parameter: Description
+%Main Parameter: (Element) Description
 
 % %Subsystem, MaskType:CMBlock (ModelInfo block)
 % %https://www.mathworks.com/help/simulink/slref/modelinfo.html
@@ -134,6 +135,10 @@ end
 %Annotation (linkable to blocks/areas, image-annotations)
 %https://www.mathworks.com/help/simulink/ug/annotations.html
 %Main Parameter: Text/Name
+
+
+
+
 
 %Note (external: *.mldatx, are associated to model file, read/write mode, updates to currently open system)
 %https://www.mathworks.com/help/simulink/ug/annotations.html
