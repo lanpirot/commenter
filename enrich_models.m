@@ -25,7 +25,7 @@ function enrich_models(C)
         all_projects = maybe_init(all_projects, en_tuple{1});
         all_projects = enrich(all_projects, en_tuple);
         all_info.(C.PROJECTS) = all_projects;
-        hfs.saveit(all_projects, C.all_models_json)
+        hfs.saveit(all_projects, C.all_models_json);
         hfs.make_pretty(C.all_models_json);
     end
     fprintf("Model enrichment done.\n\n")
@@ -76,17 +76,19 @@ function en = en_template(en_tuple, project, model)
         en = en_function(model, model_name_no_ending);
         if ~isa(en, 'struct') && ~isa(en,'float')
             en = string(en);
-        else
+        elseif isa(en, 'struct')
             for i = 1:numel(en)
                 try
-                    if isfield(en, 'UserData')
-                        jsonencode(en(i).UserData);
+                    u = en(i).UserData;
+                    if isfield(u,'format') && isfield(u,'content')
+                        jsonencode(u);
+                    else
+                        en(i).UserData = "";
                     end
                 catch
-                    en(i).UserData = "Error";
+                    en(i).UserData = "";
                 end
             end
-            disp(en)
         end
         close_system(model_name_no_ending)
     catch ME
