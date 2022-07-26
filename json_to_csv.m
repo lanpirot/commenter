@@ -1,6 +1,6 @@
 function json_to_csv()
-    C = Helper_functions.create_constants(1, 2820);
-    json_file = C.all_models_json;
+    %C = Helper_functions.create_constants(1, 2820);
+    json_file = "all_models.json";
     projects = jsondecode(fileread(json_file));
     C = Helper_functions.create_constants(1, length(projects));
     
@@ -11,11 +11,12 @@ function json_to_csv()
     %MaskDisplayString
     %versinfo_string
 
-    for i=1:10 %numel(projects)
+    for i=1:numel(projects)
         for j=1:numel(projects(i).(C.MODELS))
+            disp(j)
             model = projects(i).(C.MODELS)(j);
             if ~strcmp(model.(C.DESCRIPTION),"") && ~strcmp(model.(C.DESCRIPTION),C.NO_TODO)
-                model_descriptions(end+1) = parse_block(model.absolute_path, "", "", model.(C.DESCRIPTION));
+                model_descriptions(end+1) = parse_block(model.absolute_path, "", "", model.(C.DESCRIPTION), "");
             end
 
 
@@ -30,7 +31,9 @@ function json_to_csv()
                     block_descriptions(end+1) = parse_block(model.absolute_path, block.Parent, block.Name, block.Description, "");
                 elseif strcmp(block.MaskType,'DocBlock')
                     ud = block.UserData;
-                    doc_blocks(end+1) = parse_block(model.absolute_path, block.Parent, block.Name, ud.content, ud.format);
+
+                    %put back in later
+                    %doc_blocks(end+1) = parse_block(model.absolute_path, block.Parent, block.Name, ud.content, ud.format);
                 end
             end
         end
@@ -60,5 +63,5 @@ function block_params = parse_block(path, parent, name, text, format)
     block_params.Parent = parent;
     block_params.Name = name;
     block_params.Text = text;
-    block_params.format = format;
+    block_params.Format = format;
 end

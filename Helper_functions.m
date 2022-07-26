@@ -33,7 +33,7 @@ classdef Helper_functions
             C = Constants;
             C.MIN = min;
             C.MAX = max;
-            %C.all_models_json = "all_models" + string(min) + "-" + string(max) + ".json";
+            C.all_models_json = "all_models" + string(min) + "-" + string(max) + ".json";
         end
         
         function make_pretty(file_path)
