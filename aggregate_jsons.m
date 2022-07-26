@@ -5,8 +5,7 @@ function aggregate_jsons()
     C = Helper_functions.create_constants(1, 1);
     
     for i = 1:length(jsons)
-        next_json_info = jsondecode(fileread(jsons(i).name));
-        next_projects = next_json_info.(C.PROJECTS);
+        next_projects = jsondecode(fileread(jsons(i).name));
         for j = 1:length(next_projects)
             projects = [projects next_projects(j)];
         end
