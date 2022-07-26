@@ -80,7 +80,7 @@ function en = en_template(en_tuple, project, model)
             for i = 1:numel(en)
                 try
                     u = en(i).UserData;
-                    if isfield(u,'format') && isfield(u,'content')
+                    if ~strcmp(u.format,"")
                         jsonencode(u);
                     else
                         en(i).UserData = "";
