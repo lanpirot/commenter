@@ -13,10 +13,8 @@ function aggregate_jsons()
     
     C = Helper_functions.create_constants(1, length(projects));
     
-    all_info = struct;
-    all_info.projects = projects;
     
-    Helper_functions.saveit(all_info, C.all_models_json)
+    Helper_functions.saveit(projects, C.all_models_json)
     Helper_functions.make_pretty(C.all_models_json);    
 end
 

@@ -87,7 +87,7 @@ classdef Constants
         
         %all_models_json = "ERROR.json"
         project_description = "project-description.json"
-        
+        csv_file = "documentation.csv"
         dir_separator = system_constants.dir_separator
     end
 end
