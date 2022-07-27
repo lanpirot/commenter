@@ -13,7 +13,6 @@ function json_to_csv()
 
     for i=1:numel(projects)
         for j=1:numel(projects(i).(C.MODELS))
-            disp(j)
             model = projects(i).(C.MODELS)(j);
             if ~strcmp(model.(C.DESCRIPTION),"") && ~strcmp(model.(C.DESCRIPTION),C.NO_TODO)
                 model_descriptions(end+1) = parse_block(model.absolute_path, "", "", model.(C.DESCRIPTION), "");
@@ -31,9 +30,10 @@ function json_to_csv()
                     block_descriptions(end+1) = parse_block(model.absolute_path, block.Parent, block.Name, block.Description, "");
                 elseif strcmp(block.MaskType,'DocBlock')
                     ud = block.UserData;
-
-                    %put back in later
-                    %doc_blocks(end+1) = parse_block(model.absolute_path, block.Parent, block.Name, ud.content, ud.format);
+                    if isempty(ud)
+                        continue
+                    end
+                    doc_blocks(end+1) = parse_block(model.absolute_path, block.Parent, block.Name, ud.content, ud.format);
                 end
             end
         end

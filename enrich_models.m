@@ -15,16 +15,13 @@ function enrich_models(C)
         %C.NUM_BLOCKS,@en_fs.NUM_BLOCKS,...
         %C.NUM_SUBSYSTEMS,@en_fs.NUM_SUBSYSTEMS};
 
-    all_info = jsondecode(fileread(C.all_models_json));
+    all_projects = jsondecode(fileread(C.all_models_json));
 
-
-    all_projects = all_info.(C.PROJECTS);
 
     for i = 1:2:length(en_tuples)
         en_tuple = [en_tuples(i), en_tuples(i+1)];
         all_projects = maybe_init(all_projects, en_tuple{1});
         all_projects = enrich(all_projects, en_tuple);
-        all_info.(C.PROJECTS) = all_projects;
         hfs.saveit(all_projects, C.all_models_json);
         hfs.make_pretty(C.all_models_json);
     end
@@ -79,8 +76,10 @@ function en = en_template(en_tuple, project, model)
         elseif isa(en, 'struct')
             for i = 1:numel(en)
                 try
+
                     u = en(i).UserData;
-                    if ~strcmp(u.format,"")
+                    if (isa(u,'char') && ~isempty(u)) || (isa(u,'string') && ~u=="") || ~strcmp(u.content,"")
+                        disp(u)
                         jsonencode(u);
                     else
                         en(i).UserData = "";

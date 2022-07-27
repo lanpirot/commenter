@@ -26,10 +26,7 @@ function create_json(C)
         all_projects_info(j) = project_info;
     end
 
-    all_info = struct;
-    all_info.(C.PROJECTS) = all_projects_info;
-
-    hfs.saveit(all_info, C.all_models_json)
+    hfs.saveit(all_projects_info, C.all_models_json)
     hfs.make_pretty(C.all_models_json);
     fprintf("Project creation done.\n\n")
 end

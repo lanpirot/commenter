@@ -11,17 +11,15 @@ function enrich_projects(C)
         %C.PROJECT_LENGTH, @en_fs.PROJECT_LENGTH};%,...
         %C.PROJECT_NAME_DUPLICATES, @en_fs.PROJECT_NAME_DUPLICATES};
 
-    all_info = jsondecode(fileread(C.all_models_json));
-    all_projects = all_info.(C.PROJECTS);
+    all_projects = jsondecode(fileread(C.all_models_json));
 
     for i = 1:2:length(en_tuples)
         en_tuple = [en_tuples(i), en_tuples(i+1)];
         all_projects = maybe_init(all_projects, en_tuple{1});
         all_projects = enrich(all_projects, en_tuple);
     end
-    
-    all_info.(C.PROJECTS) = all_projects;
-    hfs.saveit(all_info, C.all_models_json)
+
+    hfs.saveit(all_projects, C.all_models_json)
     hfs.make_pretty(C.all_models_json)
     fprintf("Project enrichment done.\n\n")
 return

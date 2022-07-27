@@ -1,6 +1,8 @@
-open("C:\Users\boll\tmp\DEFLT.slx")
+%open("C:\Users\boll\tmp\DEFLT.slx")
+open('C:\svns\simucomp2\models\SLNET_v1\SLNET_v1\SLNET_GitHub/29702360/LeanPulse-SyD-master/src/matlab/demos/SyDdemo.mdl')
 %open("C:\svns\simucomp2\code\commenter\tmp.slx")
 modelName = "DEFLT";
+modelName = "SyDdemo";
 handles = find_system(modelName,'LookUnderMasks','on','RegExp','on','FindAll','on','FollowLinks','on','Type','annotation|block');
 
 
