@@ -32,8 +32,12 @@ function json_to_csv()
                     ud = block.UserData;
                     if isempty(ud)
                         continue
+                    elseif class(ud)=='char' || class(ud) == 'string'
+                        content = ud;
+                    else
+                        content = ud.content;
                     end
-                    doc_blocks(end+1) = parse_block(model.absolute_path, block.Parent, block.Name, ud.content, ud.format);
+                    doc_blocks(end+1) = parse_block(model.absolute_path, block.Parent, block.Name, content, ud.format);
                 end
             end
         end
