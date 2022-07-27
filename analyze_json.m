@@ -46,7 +46,7 @@ function analyze_json()
 
     all_docu_types = [struct('name','annotations','struct_list',annotations),struct('name','model_descriptions','struct_list',model_descriptions),struct('name','block_descriptions','struct_list',block_descriptions),struct('name','doc_blocks','struct_list',doc_blocks)];
     present(all_docu_types)
-    export_to_csv(all_docu_types)
+    %export_to_csv(all_docu_types)
 end
 
 function present(all_docu_types)
@@ -54,15 +54,16 @@ function present(all_docu_types)
         struct = all_docu_types(i);
         name = struct.name;
         docu_list = struct.struct_list;
-        fprintf("We found %i(%i) %s.", my_unique(docu_list), numel(docu_list), name)
+        fprintf("We found %i(%i) %s.\n", my_unique(docu_list), numel(docu_list), name)
     end
 end
 
 function rt = my_unique(docu_list)
     texts_only = [];
     for i = 1:numel(docu_list)
-        texts_only = [texts_only ; docu_list.Text];
+        texts_only = [texts_only ; string(docu_list(i).Text)];
     end
+    rt = length(unique(texts_only));
 end
 
 function scheme = struct_scheme()

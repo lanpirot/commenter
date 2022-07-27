@@ -79,7 +79,6 @@ function en = en_template(en_tuple, project, model)
 
                     u = en(i).UserData;
                     if (isa(u,'char') && ~isempty(u)) || (isa(u,'string') && ~u=="") || ~strcmp(u.content,"")
-                        disp(u)
                         jsonencode(u);
                     else
                         en(i).UserData = "";
