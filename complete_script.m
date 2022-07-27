@@ -23,7 +23,6 @@ function complete_script(mini, maxi)
     %create_json(C)
     %enrich_projects(C)
     enrich_models(C)
-    %analyze_json(C)
     fprintf("All done for projects %i-%i\n",mini,maxi);
 end
 

@@ -62,7 +62,10 @@ classdef Constants
 
         %comment properties
         BLOCKS_WITH_DOCU = "blocks_with_documentation"
-        DESCRIPTION = "model_description"
+        M_DESCRIPTION = "model_description"
+        B_DESCRIPTION = "block_description"
+        ANNOTATION = "annotation"
+        DOCBLOCK = "docblock"
         param_list = ["Type","BlockType","Description","Parent","Orientation","ForegroundColor","BackgroundColor","DropShadow","FontAngle","FontName","FontSize","FontWeight","Name","NamePlacement","NameLocation","ShowName","HideAutomaticName","Mask","MaskDisplay","MaskDisplayString","MaskType","versinfo_data","versinfo_string","Selected","Open","Tag","UserData","Commented","Permission","Text"]
 
 
