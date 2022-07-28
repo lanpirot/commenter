@@ -1,6 +1,6 @@
 function analyze_json()
     %C = Helper_functions.create_constants(1, 2820);
-    json_file = "all_models.json";
+    json_file = "all_models1-2820.json";
     projects = jsondecode(fileread(json_file));
     C = Helper_functions.create_constants(1, length(projects));
     
@@ -10,9 +10,10 @@ function analyze_json()
     doc_blocks = struct_scheme();
     %MaskDisplayString
     %versinfo_string
-
+    m = 0;
     for i=1:numel(projects)
         for j=1:numel(projects(i).(C.MODELS))
+            m = m + 1;
             model = projects(i).(C.MODELS)(j);
             if ~strcmp(model.(C.M_DESCRIPTION),"") && ~strcmp(model.(C.M_DESCRIPTION),C.NO_TODO)
                 model_descriptions(end+1) = parse_block(model.absolute_path, "", "", model.(C.M_DESCRIPTION), "");
@@ -34,10 +35,16 @@ function analyze_json()
                         continue
                     elseif isa(ud,'char') || isa(ud,'string')
                         content = ud;
+                        format = "";
                     else
                         content = ud.content;
+                        if isfield(ud,'format')
+                            format = ud.format;
+                        else
+                            format = "";
+                        end
                     end
-                    doc_blocks(end+1) = parse_block(model.absolute_path, block.Parent, block.Name, content, ud.format);
+                    doc_blocks(end+1) = parse_block(model.absolute_path, block.Parent, block.Name, content, format);
                 end
             end
         end
@@ -45,11 +52,12 @@ function analyze_json()
     
 
     all_docu_types = [struct('name','annotations','struct_list',annotations),struct('name','model_descriptions','struct_list',model_descriptions),struct('name','block_descriptions','struct_list',block_descriptions),struct('name','doc_blocks','struct_list',doc_blocks)];
-    present(all_docu_types)
-    %export_to_csv(all_docu_types)
+    present(all_docu_types, m)
+    export_to_csv(all_docu_types)
 end
 
-function present(all_docu_types)
+function present(all_docu_types, m)
+    fprintf("We analyzed %i models.\n", m)
     for i = 1:numel(all_docu_types)
         struct = all_docu_types(i);
         name = struct.name;
@@ -60,10 +68,15 @@ end
 
 function rt = my_unique(docu_list)
     texts_only = [];
+    lengths = [];
     for i = 1:numel(docu_list)
         texts_only = [texts_only ; string(docu_list(i).Text)];
+        lengths(end+1) = strlength(string(docu_list(i).Text));
     end
     rt = length(unique(texts_only));
+    %histogram(lengths)
+    set(gca,'YScale','log')
+    set(gca,'XScale','log')
 end
 
 function scheme = struct_scheme()

@@ -1,4 +1,5 @@
-function aggregate_jsons()
+cat commenter
+    function aggregate_jsons()
     jsons = find_jsons();
     projects = struct.empty;
     
