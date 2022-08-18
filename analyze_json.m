@@ -1,6 +1,6 @@
 function analyze_json()
     %C = Helper_functions.create_constants(1, 2820);
-    json_file = "all_models1-2820.json";
+    json_file = "all_models1-2828.json";
     projects = jsondecode(fileread(json_file));
     C = Helper_functions.create_constants(1, length(projects));
     
@@ -10,11 +10,17 @@ function analyze_json()
     doc_blocks = struct_scheme();
     %MaskDisplayString
     %versinfo_string
-    m = 0;
+    m = 0; model_num = 0;
     for i=1:numel(projects)
         for j=1:numel(projects(i).(C.MODELS))
             m = m + 1;
+            
+
             model = projects(i).(C.MODELS)(j);
+            if strcmp(model.(C.IS_LOADABLE),'YES')
+                model_num = model_num + 1;
+            end
+
             if ~strcmp(model.(C.M_DESCRIPTION),"") && ~strcmp(model.(C.M_DESCRIPTION),C.NO_TODO)
                 model_descriptions(end+1) = parse_block(model.absolute_path, "", "", model.(C.M_DESCRIPTION), "");
             end
@@ -52,12 +58,15 @@ function analyze_json()
     
 
     all_docu_types = [struct('name','annotations','struct_list',annotations),struct('name','model_descriptions','struct_list',model_descriptions),struct('name','block_descriptions','struct_list',block_descriptions),struct('name','doc_blocks','struct_list',doc_blocks)];
-    present(all_docu_types, m)
+    fprintf("We analyzed %i projects.\n", numel(projects))
+    fprintf("We found %i models.\n", m)
+
+    present(all_docu_types, model_num)
     export_to_csv(all_docu_types)
 end
 
 function present(all_docu_types, m)
-    fprintf("We analyzed %i models.\n", m)
+    fprintf("We did analyze %i models.\n", m)
     for i = 1:numel(all_docu_types)
         struct = all_docu_types(i);
         name = struct.name;
@@ -75,8 +84,8 @@ function rt = my_unique(docu_list)
     end
     rt = length(unique(texts_only));
     %histogram(lengths)
-    set(gca,'YScale','log')
-    set(gca,'XScale','log')
+    %set(gca,'YScale','log')
+    %set(gca,'XScale','log')
 end
 
 function scheme = struct_scheme()
