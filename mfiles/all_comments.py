@@ -13,6 +13,8 @@ def gather_models(path):
     os.chdir(path)
     return glob.glob("**/*.m", recursive=True)
 
+#first output: is the line a comment?
+#second output: is it a multi-line comment?
 def is_a_comment(line):
     return line.lstrip().startswith("%") or line.lstrip().startswith("%{"), line.lstrip().startswith("%{")
 
@@ -38,7 +40,7 @@ def get_classdef_lineno(lines):
     return -1
 
 def is_code(line):
-    return not(is_a_comment(line)) and not(is_empty(line)) and not(is_classdef(line))
+    return not(is_a_comment(line)[0]) and not(is_empty(line)) and not(is_classdef(line))
 
 def is_multi_end(line):
     return line.__contains__("%}")
@@ -54,7 +56,7 @@ def gather_comments(model):
             lines = file.readlines()
         except:
             print(model, " has wrong encoding")
-            return [], -1
+            return [], False
         classdef_lineno = get_classdef_lineno(lines)
         if classdef_lineno >= 0:
             class_comment_possible = True
@@ -65,8 +67,9 @@ def gather_comments(model):
         comment_start = -1
         comment = ""
         is_multi_comment = False
+        is_class_comment = False
         for line_no, line in enumerate(lines):
-            if is_code(line):
+            if is_code(line) and not is_multi_comment:
                 class_comment_possible = False
             is_comment, multi_line = is_a_comment(line)
 
@@ -77,23 +80,21 @@ def gather_comments(model):
                 if comment_start < 0:
                     comment_start = line_no
                 is_class_comment = class_comment_possible
-                comment += line #strip(line)
+                comment += line
                 if is_multi_comment:
                     if is_multi_end(line):
                         is_multi_comment = False
+                        comment_list += [{"Start_Line": comment_start, "End_Line": line_no - 1, "Comment": comment, "Inline": False, "Class_Comment": is_class_comment}]
                         comment = ""
                         comment_start = -1
-                        comment_list += [
-                            {"Start_Line": comment_start, "End_Line": line_no - 1, "Comment": comment, "Inline": False,
-                             "Class_Comment": is_class_comment}]
             elif comment_start >= 0:
                 if is_empty(line):
                     continue
                 comment_list += [{"Start_Line": comment_start, "End_Line": line_no - 1, "Comment": comment, "Inline": False, "Class_Comment": is_class_comment}]
                 comment = ""
                 comment_start = -1
-                if is_inline_comment(line):
-                    comment_list += [{"Start_Line": line_no, "End_Line": line_no, "Comment": all_behind_percent(line), "Inline": True, "Class_Comment": is_class_comment}]
+            if not is_comment and is_inline_comment(line):
+                comment_list += [{"Start_Line": line_no, "End_Line": line_no, "Comment": all_behind_percent(line), "Inline": True, "Class_Comment": class_comment_possible}]
     return comment_list, classdef_lineno >= 0
 
 
@@ -109,7 +110,7 @@ def main_loop(repo_paths, outfile):
     m_num = 0
     for pp in repo_paths:
         projects = gather_projects(pp)
-        for e, p in enumerate(projects[:2]):
+        for e, p in enumerate(projects):
             p_num += 1
             print("Working on ", e, " of ", len(projects), "(", p, ")")
             project_path = Path.joinpath(pp, Path(p))
@@ -141,3 +142,12 @@ if __name__ == '__main__':
     outfile = Path("C:\\svns\\alex projects\\commenter\\mfiles\\m_comments.json")
     main_loop(repo_paths, outfile)
     print("All done!")
+
+
+
+# if __name__ == '__main__':
+#     repo_paths = [Path("/storage/homefs/mb21o473/models/SLNET/SLNET_GitHub"),
+#                   Path("/storage/homefs/mb21o473/models/SLNET/SLNET_MATLABCentral")]
+#     outfile = Path("/storage/homefs/mb21o473/code/commenter/mfiles/m_comments.json")
+#     main_loop(repo_paths, outfile)
+#     print("All done!")
