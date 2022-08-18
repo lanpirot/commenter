@@ -98,7 +98,7 @@ def gather_comments(model):
 
 
 def add_to_json(outfile, comment_list):
-    with open(outfile,"w+") as file:
+    with open(outfile, "w+") as file:
         encoded = json.dumps(comment_list, indent=3)
         file.write(encoded)
 
@@ -109,7 +109,7 @@ def main_loop(repo_paths, outfile):
     m_num = 0
     for pp in repo_paths:
         projects = gather_projects(pp)
-        for e, p in enumerate(projects):
+        for e, p in enumerate(projects[:2]):
             p_num += 1
             print("Working on ", e, " of ", len(projects), "(", p, ")")
             project_path = Path.joinpath(pp, Path(p))
@@ -120,9 +120,9 @@ def main_loop(repo_paths, outfile):
                 cs, classdef = gather_comments(model_path)
                 if cs:
                     m_num_with += 1
-                    comment_list += [{"Project": project_path, "Model": model_path, "Model Number": m_num, "Classdef found": classdef, "Comments": cs}]
+                    comment_list += [{"Project": str(project_path), "Model": str(model_path), "Model Number": m_num, "Classdef found": classdef, "Comments": cs}]
                 else:
-                    comment_list += [{"Project": project_path, "Model": model_path, "Model Number": m_num, "Classdef found": classdef, "Comments": []}]
+                    comment_list += [{"Project": str(project_path), "Model": str(model_path), "Model Number": m_num, "Classdef found": classdef, "Comments": []}]
 
     print(f"Analyzed {p_num} projects.")
     print(f"Found comments in {m_num_with} m-files of {m_num} m-files.")
@@ -133,7 +133,7 @@ def main_loop(repo_paths, outfile):
     class_comments = sum([len([c for c in comments if c["Class_Comment"] == True]) for comments in all_comments])
     other_comments = sum([len([c for c in comments if c["Class_Comment"] == False]) for comments in all_comments])
     print(f"Of which {class_comments} were Class Comments and {other_comments} other comments.")
-    add_to_json(str(outfile), comment_list)
+    add_to_json(outfile, comment_list)
 
 if __name__ == '__main__':
     repo_paths = [Path("C:\\svns\simucomp2\\models\\SLNET_v1\\SLNET_v1\\SLNET_GitHub"),
