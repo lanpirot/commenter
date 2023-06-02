@@ -6,7 +6,8 @@ tmp/
 *.txt
 csvs_complete_sampled/
 csvs_unionized_sampled/
-mfiles/.idea/
-mfiles/venv/
+python/.idea/
+python/venv/
 slprj/
+m_out
 

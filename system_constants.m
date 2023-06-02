@@ -9,6 +9,7 @@ classdef system_constants
         %all_projects_path1 = "/storage/homefs/mb21o473/models/SLNET/SLNET_GitHub"
         %all_projects_path2 = "/storage/homefs/mb21o473/models/SLNET/SLNET_MATLABCentral"
 
-        out_path = "C:\svns\alex projects\commenter\sl_out\all_models.json"
+        out_path = "C:\svns\alex projects\commenter\sl_out\"
+        all_models_json = system_constants.out_path + "allmodels.json"
     end
 end

@@ -20,7 +20,7 @@ def print_projects(csv_file, projects, class_only):
             rows.append([path, text, start_line, end_line, class_comment])
 
     df = pandas.DataFrame(rows,columns=["Path", "Text", "Start_Line", "End_Line", "Class_Comment"])
-    df.to_csv(Path(str(csv_file)), sep=",", mode="w+", index=False, errors='replace')
+    df.to_csv(Path(str(csv_file)), sep=",", mode="w+", index=False)
 
 def main_loop(json_file, csv_file, class_only):
     with open(json_file, "r") as json_file:

@@ -1,6 +1,5 @@
 function analyze_json()
-    %C = Helper_functions.create_constants(1, 2820);
-    json_file = "all_models.json";
+    json_file = system_constants.all_models_json;
     projects = jsondecode(fileread(json_file));
     C = Helper_functions.create_constants(1, length(projects));
     
@@ -97,7 +96,7 @@ function export_to_csv(all_docu_types)
         struct = all_docu_types(i);
         name = struct.name;
         table = struct2table(struct.struct_list);
-        writetable(table,name+".csv",'QuoteStrings',true)
+        writetable(table,system_constants.out_path + name+".csv",'QuoteStrings',true)
     end
 end
 

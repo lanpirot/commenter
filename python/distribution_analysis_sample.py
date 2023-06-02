@@ -1,4 +1,5 @@
 import pandas
+import json
 import matplotlib.pyplot as plt
 from pathlib import Path
 import html2text
@@ -45,7 +46,7 @@ def main_loop(files_samplesizes, sample_size, outprefix):
     for f_s in files_samplesizes:
         csv_file = f_s
         print(f"Computing {csv_file}")
-        df2 = pandas.read_csv(str(csv_file)+".csv")
+        df2 = pandas.read_csv(str(csv_file))
         print(f"Number of items with duplicates: {len(df2)}")
         df2 = df2.drop_duplicates(subset="Text")
         print(f"Number of items without duplicates: {len(df2)}")
@@ -66,15 +67,16 @@ def main_loop(files_samplesizes, sample_size, outprefix):
     print(f"{outprefix} done.")
 
 if __name__ == '__main__':
-    files_samplesizes = [Path("C:\\svns\\alex projects\\commenter\\csvs_unionized_sampled\\m_comments_class"),
-                          Path("C:\\svns\\alex projects\\commenter\\csvs_unionized_sampled\\m_comments_no_class")]
-    main_loop(files_samplesizes, 383, "C:\\svns\\alex projects\\commenter\\csvs_unionized_sampled\\m_comments_")
+    with open("constants.json", "r") as constants:
+        constants = json.load(constants)
+    files_samplesizes = [Path(constants["m_class"]),
+                          Path(constants["m_no_class"])]
+    main_loop(files_samplesizes, 383, Path(constants["m_prefix"]))
+
+
+    files_samplesizes = [Path(constants["annotations"]),
+     Path(constants["model_descriptions"]),
+     Path(constants["block_descriptions"]),
+     Path(constants["doc_blocks"])]
+    main_loop(files_samplesizes, 374, constants["sl_prefix"])
     print("All done!")
-
-
-    #files_samplesizes = [Path("C:\\svns\\alex projects\\commenter\\csvs_unionized_sampled\\annotations"),
-    # Path("C:\\svns\\alex projects\\commenter\\csvs_unionized_sampled\\model_descriptions"),
-    # Path("C:\\svns\\alex projects\\commenter\\csvs_unionized_sampled\\block_descriptions"),
-    # Path("C:\\svns\\alex projects\\commenter\\csvs_unionized_sampled\\doc_blocks")]
-    #main_loop(files_samplesizes, 374, "C:\\svns\\alex projects\\commenter\\csvs_unionized_sampled\\simulink_docu_")
-    #print("All done!")
