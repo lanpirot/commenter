@@ -18,8 +18,27 @@ def gather_models(path):
 def is_a_comment(line):
     return line.lstrip().startswith("%") or line.lstrip().startswith("%{"), line.lstrip().startswith("%{")
 
-def is_inline_comment(line):
-    return line.__contains__("%")
+def get_inline_comment(line):
+    if not line.__contains__("%"):
+        return None
+    line_copy = line[:]
+    while len(line) > 0:
+        if line.__contains__("%"):
+            p_index = line.find("%")
+            s_index = line.find("'")
+            d_index = line.find('"')
+            if 0 <= s_index < p_index:
+                ss_index = line[s_index+1:].find("'")
+                line = line[s_index + ss_index + 2:]
+                continue
+            if 0 <= d_index < p_index:
+                pp_index = line[p_index + 1:].find('"')
+                line = line[p_index + pp_index + 2:]
+                continue
+            line = line[p_index:]
+            return line
+        else:
+            return None
 
 def all_behind_percent(line):
     index = line.find("%")
@@ -93,8 +112,10 @@ def gather_comments(model):
                 comment_list += [{"Start_Line": comment_start, "End_Line": line_no - 1, "Comment": comment, "Inline": False, "Class_Comment": is_class_comment}]
                 comment = ""
                 comment_start = -1
-            if not is_comment and is_inline_comment(line):
-                comment_list += [{"Start_Line": line_no, "End_Line": line_no, "Comment": all_behind_percent(line), "Inline": True, "Class_Comment": class_comment_possible}]
+            if not is_comment:
+                in_line_comment = get_inline_comment(line)
+                if in_line_comment:
+                    comment_list += [{"Start_Line": line_no, "End_Line": line_no, "Comment": in_line_comment, "Inline": True, "Class_Comment": class_comment_possible}]
     return comment_list, classdef_lineno >= 0
 
 
@@ -137,8 +158,8 @@ def main_loop(repo_paths, outfile):
     add_to_json(outfile, comment_list)
 
 if __name__ == '__main__':
-    repo_paths = [Path("C:\\svns\simucomp2\\models\\SLNET_v1\\SLNET_v1\\SLNET_GitHub"),
-                  Path("C:\\svns\\simucomp2\\models\\SLNET_v1\\SLNET_v1\\SLNET_MATLABCentral")]
+    repo_paths = [Path("C:\\svns\simucomp2\\models\\SLNET_v1\\SLNET\\SLNET_GitHub"),
+                  Path("C:\\svns\\simucomp2\\models\\SLNET_v1\\SLNET\\SLNET_MATLABCentral")]
     outfile = Path("C:\\svns\\alex projects\\commenter\\mfiles\\m_comments.json")
     main_loop(repo_paths, outfile)
     print("All done!")

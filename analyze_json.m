@@ -1,6 +1,6 @@
 function analyze_json()
     %C = Helper_functions.create_constants(1, 2820);
-    json_file = "all_models1-2828.json";
+    json_file = "all_models.json";
     projects = jsondecode(fileread(json_file));
     C = Helper_functions.create_constants(1, length(projects));
     

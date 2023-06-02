@@ -1,2 +1,12 @@
 figs/
 tmp/
+*.json
+*.csv
+*.asv
+*.txt
+csvs_complete_sampled/
+csvs_unionized_sampled/
+mfiles/.idea/
+mfiles/venv/
+slprj/
+

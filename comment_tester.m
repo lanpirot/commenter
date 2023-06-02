@@ -1,8 +1,12 @@
 %open("C:\Users\boll\tmp\DEFLT.slx")
-open('C:\svns\simucomp2\models\SLNET_v1\SLNET_v1\SLNET_GitHub/29702360/LeanPulse-SyD-master/src/matlab/demos/SyDdemo.mdl')
+%open('C:\svns\simucomp2\models\SLNET_v1\SLNET_v1\SLNET_GitHub/29702360/LeanPulse-SyD-master/src/matlab/demos/SyDdemo.mdl')
 %open("C:\svns\simucomp2\code\commenter\tmp.slx")
+
+
+open("SLNET/SLNET_GitHub/204030363/simulink_models-master/models/bitcrusher/BC.slx")
 modelName = "DEFLT";
 modelName = "SyDdemo";
+modelName = "BC";
 handles = find_system(modelName,'LookUnderMasks','on','RegExp','on','FindAll','on','FollowLinks','on','Type','annotation|block');
 
 
@@ -144,8 +148,3 @@ end
 
 %Note (external: *.mldatx, are associated to model file, read/write mode, updates to currently open system)
 %https://www.mathworks.com/help/simulink/ug/annotations.html
-%
-
-%Model/Block Description
-%
-%Main Parameter: Description
