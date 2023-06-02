@@ -1,4 +1,6 @@
-README
+= README
+
+You have to create each output folder/path you specify, below, manually.
 
 == To run the Simulink model (.slx, .mdl) documentation analysis:
 1. Adapt the constants in `system_constants.m` to your system.
@@ -8,8 +10,9 @@ README
 2. Run the Simulink documentation analysis, e.g. 
    `matlab -nodisplay -nosplash -nodesktop -r "run('complete_script()');exit;"` 
    The output .json-File will be put to your path of 1c).
-3. Run `analyze_json.m` to aggregate findings of the Simulink model analysis.
-   This step outputs .csv files for each category of Simulink documentation (annotation, docblock, etc.)
+3. Run `matlab -nodisplay -nosplash -nodesktop -r "run('analyze_json()');exit;"` to 
+   aggregate findings of the Simulink model analysis. This step outputs .csv files 
+   for each category of Simulink documentation (annotation, docblock, etc.)
 
 == To run the Matlab code (.m) documentation analysis:
 1. Adapt the constants in `python/constants.json` to your system

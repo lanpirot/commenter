@@ -11,7 +11,7 @@ def print_projects(csv_file, projects, class_only):
                 continue
             path = p["Model"]
             if '\udca2' in path:
-                print("")
+                path = path.encode('utf-8', 'replace').decode()
             text = c["Comment"]
             start_line = c["Start_Line"]+1 #was counted from line number 0 in the files
             end_line = c["End_Line"]+1

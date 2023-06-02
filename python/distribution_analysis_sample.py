@@ -81,5 +81,5 @@ if __name__ == '__main__':
      Path(constants["model_descriptions"]),
      Path(constants["block_descriptions"]),
      Path(constants["doc_blocks"])]
-    main_loop(files_samplesizes, 10, constants["sl_prefix"])
+    main_loop(files_samplesizes, 374, constants["sl_prefix"])
     print("All done!")
