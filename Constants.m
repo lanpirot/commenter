@@ -3,7 +3,7 @@ classdef Constants
     properties
         MIN = 0
         MAX = 0
-        all_models_json = "all_models.json"
+        all_models_json = system_constants.out_path
         all_projects = []
     end
     properties(Constant = true)

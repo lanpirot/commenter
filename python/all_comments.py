@@ -158,17 +158,11 @@ def main_loop(repo_paths, outfile):
     add_to_json(outfile, comment_list)
 
 if __name__ == '__main__':
-    repo_paths = [Path("C:\\svns\simucomp2\\models\\SLNET_v1\\SLNET\\SLNET_GitHub"),
-                  Path("C:\\svns\\simucomp2\\models\\SLNET_v1\\SLNET\\SLNET_MATLABCentral")]
-    outfile = Path("C:\\svns\\alex projects\\commenter\\mfiles\\m_comments.json")
+    with open("constants.json", "r") as constants:
+        constants = json.load(constants)
+
+    repo_paths = [Path(constants["github_models_path"]),
+                  Path(constants["matlab_models_path"])]
+    outfile = Path(constants["m_jsonfile"])
     main_loop(repo_paths, outfile)
     print("All done!")
-
-
-
-# if __name__ == '__main__':
-#     repo_paths = [Path("/storage/homefs/mb21o473/models/SLNET/SLNET_GitHub"),
-#                   Path("/storage/homefs/mb21o473/models/SLNET/SLNET_MATLABCentral")]
-#     outfile = Path("/storage/homefs/mb21o473/code/commenter/mfiles/m_comments.json")
-#     main_loop(repo_paths, outfile)
-#     print("All done!")

@@ -28,7 +28,10 @@ def main_loop(json_file, csv_file, class_only):
         print_projects(csv_file, projects, class_only)
 
 if __name__ == '__main__':
-    json_file = Path("C:\\svns\\alex projects\\commenter\\mfiles\\m_comments.json")
-    main_loop(json_file, Path("C:\\svns\\alex projects\\commenter\\mfiles\\m_comments_class.csv"), True)
-    main_loop(json_file, Path("C:\\svns\\alex projects\\commenter\\mfiles\\m_comments_no_class.csv"), False)
+    with open("constants.json", "r") as constants:
+        constants = json.load(constants)
+
+    json_file = Path(constants["m_jsonfile"])
+    main_loop(json_file, Path(constants["m_class"]), True)
+    main_loop(json_file, Path(constants["m_no_class"]), False)
     print("All done!")

@@ -17,6 +17,9 @@ function enrich_models(C)
         C.TUD,@en_fs.TUD,...
         C.CYCLOMATIC_COMP,@en_fs.CYCLOMATIC_COMP};
 
+en_tuples = {
+        C.IS_LOADABLE,@en_fs.IS_LOADABLE,C.SUBSYS_INFO,@en_fs.SUBSYS_INFO};
+
     all_projects = jsondecode(fileread(C.all_models_json));
 
 

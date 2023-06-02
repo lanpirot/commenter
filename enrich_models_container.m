@@ -142,6 +142,15 @@ classdef enrich_models_container
                 depths(end + 1) = count(get_param(subsystem, "Parent"), '/') + 1;
             end
             en.SUB_HIST = histcounts(depths);
+            
+            max_depth = length(en.SUB_HIST);
+            num_el_depths = zeros(1,max_depth);
+            for i=1:length(subsystems)
+                subsystem = subsystems(i);
+                curr_depth = count(get_param(subsystem, "Parent"), '/') + 1;
+                num_el_depths(curr_depth) = num_el_depths(curr_depth) + length(find_system(subsystem,'LookUnderMasks','on','FindAll','on','FollowLinks','on','SearchDepth',1));
+            end
+            en.NUM_EL_DEPTHS = num_el_depths;
             en.SUB_NUM = length(subsystems);
         end
         
