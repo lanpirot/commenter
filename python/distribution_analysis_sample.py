@@ -13,13 +13,8 @@ def count_lines(text):
     return text.count("\n") + 1
 
 def clean_html(text):
-    #this is too rudimentary for some cases, e.g. word files start with
-    #<html xmlns:v=""urn:schemas-microsoft-com:vml""
-    if text[0] == "<" and text[-1] == ">":
-        if text.startswith("<!DOCTYPE HTML"):
-            return html2text.html2text(text)
-        else:
-            print(text)
+    if text[0] == "<" and (text[-1] == ">" or text.endswith(">\n") or text.endswith(">\r\n")):
+        return html2text.html2text(text)
     return text
 
 def clean_rtf(text):
@@ -61,6 +56,9 @@ def main_loop(files_samplesizes, sample_size, outprefix):
 
     get_histograms(df, "", outprefix)
     print(f"Sampling {sample_size} items.")
+
+    df = clean(df)
+
     df = df.sample(sample_size)
     df.index.name = "sampled_row_number"
     get_histograms(df, "_sampled", outprefix)
@@ -72,9 +70,9 @@ def main_loop(files_samplesizes, sample_size, outprefix):
 if __name__ == '__main__':
     with open("constants.json", "r") as constants:
         constants = json.load(constants)
-    files_samplesizes = [Path(constants["m_class"]),
-                          Path(constants["m_no_class"])]
-    main_loop(files_samplesizes, 383, Path(constants["m_prefix"]))
+    #files_samplesizes = [Path(constants["m_class"]),
+    #                      Path(constants["m_no_class"])]
+    #main_loop(files_samplesizes, 383, Path(constants["m_prefix"]))
 
 
     files_samplesizes = [Path(constants["annotations"]),
