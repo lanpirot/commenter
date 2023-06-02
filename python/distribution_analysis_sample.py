@@ -16,7 +16,10 @@ def clean_html(text):
     #this is too rudimentary for some cases, e.g. word files start with
     #<html xmlns:v=""urn:schemas-microsoft-com:vml""
     if text[0] == "<" and text[-1] == ">":
-        return html2text.html2text(text)
+        if text.startswith("<!DOCTYPE HTML"):
+            return html2text.html2text(text)
+        else:
+            print(text)
     return text
 
 def clean_rtf(text):
@@ -78,5 +81,5 @@ if __name__ == '__main__':
      Path(constants["model_descriptions"]),
      Path(constants["block_descriptions"]),
      Path(constants["doc_blocks"])]
-    main_loop(files_samplesizes, 374, constants["sl_prefix"])
+    main_loop(files_samplesizes, 10, constants["sl_prefix"])
     print("All done!")

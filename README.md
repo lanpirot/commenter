@@ -20,6 +20,9 @@ README
 2. run the .m comment analysis with `python all_comments.py`
 3. run the transformation of .json to .csv with `python to_csver.py`
 
-== To sample documentation items and produce figure:
+== To sample documentation items and produce figures of the distribution:
 1. Run `python distribution_analysis_sample.py`
+2. This will give a representative sample of m-file comments and slx/mdl-file comments.
+   Also: some distribution charts will be constructed, so that you can see, whether the distribution of e.g. 
+   comment lengths was impacted much by sampling.
 	

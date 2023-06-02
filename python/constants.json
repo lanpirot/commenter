@@ -7,8 +7,8 @@
   "matlab_models_path":"C:\\svns\\simucomp2\\models\\SLNET_v1\\SLNET\\SLNET_MATLABCentral",
   "m_prefix":"C:\\svns\\alex projects\\commenter\\samples\\m_comments_",
   "sl_prefix": "C:\\svns\\alex projects\\commenter\\samples\\sl_comments_",
-  "annotations": "C:\\svns\\alex projects\\commenter\\csvs_unionized_sampled\\annotations",
-  "model_descriptions": "C:\\svns\\alex projects\\commenter\\csvs_unionized_sampled\\model_descriptions",
-  "block_descriptions": "C:\\svns\\alex projects\\commenter\\csvs_unionized_sampled\\block_descriptions",
-  "doc_blocks": "C:\\svns\\alex projects\\commenter\\csvs_unionized_sampled\\doc_blocks"
+  "annotations": "C:\\svns\\alex projects\\commenter\\sl_out\\annotations.csv",
+  "model_descriptions": "C:\\svns\\alex projects\\commenter\\sl_out\\model_descriptions.csv",
+  "block_descriptions": "C:\\svns\\alex projects\\commenter\\sl_out\\block_descriptions.csv",
+  "doc_blocks": "C:\\svns\\alex projects\\commenter\\sl_out\\doc_blocks.csv"
 }
