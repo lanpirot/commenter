@@ -18,7 +18,7 @@ classdef Constants
         
         NONE = ""
         OVERWRITE = Constants.NO
-        FORCE_OVERWRITE = Constants.BLOCKS_WITH_DOCU
+        FORCE_OVERWRITE = Constants.SUBSYS_INFO
         
         
         
@@ -51,8 +51,7 @@ classdef Constants
         TUD = "time_under_development"
         NUM_LINES = "number_of_signal_lines"
         NUM_BLOCKS = "number_of_blocks"
-        NUM_SUBSYSTEMS = "number_of_subsystems"
-        NUM_BUS_CREATED = "number_of_busses_created"
+        SUBSYS_INFO = "subsystem_info"
         CYCLOMATIC_COMP = "cyclomatic_complexity"
         ABSOLUTE_PATH = "absolute_path"
         REL_PROJ_PATH = "rel_project_path"
