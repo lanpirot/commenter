@@ -18,7 +18,7 @@ classdef Constants
         
         NONE = ""
         OVERWRITE = Constants.NO
-        FORCE_OVERWRITE = Constants.SUBSYS_INFO
+        FORCE_OVERWRITE = Constants.CYCLOMATIC_COMP
         
         
         
