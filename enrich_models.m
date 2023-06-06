@@ -63,7 +63,7 @@ function all_projects = enrich(all_projects, en_tuple)
             all_projects(j).(C.MODELS)(i).(new_field) = en_template(en_tuple, all_projects(j), model);
 
             disp(model)
-            dips(C.M_NUM)
+            disp(C.M_NUM)
             fprintf("Done with model %i.\n", model.(C.M_NUM))
         end
     end
