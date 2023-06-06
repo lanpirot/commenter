@@ -47,12 +47,11 @@ function all_projects = enrich(all_projects, en_tuple)
             model = project_models(i);
             warning('off','all');
 
-            %if model.m_num < 400
-            if model.m_num < 8930
+            if model.m_num < 400  || model.m_num > 1000
                 continue
             end
 
-            if (strcmp(en_tuple{1}, C.CYCLOMATIC_COMP) && ismember(model.m_num, [242, 399])) || ismember(model.m_num, [2718, 3705, 6150, 6151, 6807, 6808, 6809, 8839, 8931])
+            if (strcmp(en_tuple{1}, C.CYCLOMATIC_COMP) && ismember(model.m_num, [242, 399, 9006])) || ismember(model.m_num, [2718, 3705, 6150, 6151, 6807, 6808, 6809, 8839, 8931])
                 continue
             end
 
