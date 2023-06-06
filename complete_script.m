@@ -1,4 +1,4 @@
-function complete_script(mini, maxi)
+function complete_script(dont_analyze_cyclo_models, mini, maxi)
     warning('off','all')
     format compact
 
@@ -22,7 +22,7 @@ function complete_script(mini, maxi)
     
     create_json(C)
     enrich_projects(C)
-    enrich_models(C)
+    enrich_models(C, dont_analyze_cyclo_models)
     fprintf("All done for projects %i-%i\n",mini,maxi);
 end
 

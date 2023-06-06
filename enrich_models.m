@@ -1,4 +1,4 @@
-function enrich_models(C)
+function enrich_models(C, dont_analyze_cyclo_models)
     warning('off','all')
     format compact
 
@@ -27,7 +27,7 @@ function enrich_models(C)
     for i = 1:2:length(en_tuples)
         en_tuple = [en_tuples(i), en_tuples(i+1)];
         all_projects = maybe_init(all_projects, en_tuple{1});
-        all_projects = enrich(all_projects, en_tuple);
+        all_projects = enrich(all_projects, en_tuple, dont_analyze_cyclo_models);
         hfs.saveit(all_projects, C.all_models_json);
         hfs.make_pretty(C.all_models_json);
     end
@@ -47,11 +47,11 @@ function all_projects = enrich(all_projects, en_tuple)
             model = project_models(i);
             warning('off','all');
 
-            if model.m_num < 960  || model.m_num > 1000
-                continue
-            end
+            %if model.m_num < 960  || model.m_num > 1000
+            %    continue
+            %end
 
-            if (strcmp(en_tuple{1}, C.CYCLOMATIC_COMP) && ismember(model.m_num, [242, 399, 817, 820, 898, 899, 958, 959, 960, 9006])) || ismember(model.m_num, [2718, 3705, 6150, 6151, 6807, 6808, 6809, 8839, 8931])
+            if (strcmp(en_tuple{1}, C.CYCLOMATIC_COMP) && ismember(model.m_num, dont_analyze_cyclo_models)) || ismember(model.m_num, [2718, 3705, 6150, 6151, 6807, 6808, 6809, 8839, 8931])
                 continue
             end
 
