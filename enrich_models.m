@@ -48,11 +48,11 @@ function all_projects = enrich(all_projects, en_tuple)
             warning('off','all');
 
             %if model.m_num < 400
-            if model.m_num < 2718
+            if model.m_num < 3704
                 continue
             end
 
-            if (strcmp(en_tuple{1}, C.CYCLOMATIC_COMP) && ismember(model.m_num, [242, 399])) || ismember(model.m_num, [2718])
+            if (strcmp(en_tuple{1}, C.CYCLOMATIC_COMP) && ismember(model.m_num, [242, 399])) || ismember(model.m_num, [2718, 3705])
                 continue
             end
 
@@ -62,10 +62,6 @@ function all_projects = enrich(all_projects, en_tuple)
             fprintf("Enriching model %i with %s\n", model.(C.M_NUM), new_field)
             all_projects(j).(C.MODELS)(i).(new_field) = en_template(en_tuple, all_projects(j), model);
 
-            disp(model)
-            disp(model.m_num)
-            disp(C)
-            disp(C.M_NUM)
             fprintf("Done with model %i.\n", model.(C.M_NUM))
         end
     end
