@@ -34,7 +34,7 @@ function enrich_models(C, dont_analyze_cyclo_models)
     fprintf("Model enrichment done.\n\n")
 return
 
-function all_projects = enrich(all_projects, en_tuple)
+function all_projects = enrich(all_projects, en_tuple, dont_analyze_cyclo_models)
     global C
     new_field = en_tuple{1};
 
