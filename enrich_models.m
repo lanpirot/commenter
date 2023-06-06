@@ -47,9 +47,15 @@ function all_projects = enrich(all_projects, en_tuple)
             model = project_models(i);
             warning('off','all');
 
-            if strcmp(en_tuple{1}, "cyclomatic_complexity") && model.m_num < 242
+            if strcmp(en_tuple{1}, "cyclomatic_complexity") && model.m_num < 400
                 continue
             end
+
+            if strcmp(en_tuple{1}, C.CYCLOMATIC_COMP) && ismember(model.m_num, [242, 399]
+                continue
+            end
+
+            
 
             
             fprintf("Enriching model %i with %s\n", model.(C.M_NUM), new_field)
