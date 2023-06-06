@@ -14,7 +14,7 @@ function complete_script(mini, maxi)
         folder_list = folder_list(mini:maxi);
     end
 
-    fprintf("Starting computation for %i projects.\n",maxi-mini+1)
+    fprintf("Starting computation for %i projects.\n", maxi-mini+1)
     
     global C
     C = Helper_functions.create_constants(mini, maxi);

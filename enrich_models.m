@@ -47,7 +47,8 @@ function all_projects = enrich(all_projects, en_tuple)
             model = project_models(i);
             warning('off','all');
 
-            if model.m_num < 400
+            %if model.m_num < 400
+            if model.m_num < 2717
                 continue
             end
 
@@ -61,6 +62,8 @@ function all_projects = enrich(all_projects, en_tuple)
             fprintf("Enriching model %i with %s\n", model.(C.M_NUM), new_field)
             all_projects(j).(C.MODELS)(i).(new_field) = en_template(en_tuple, all_projects(j), model);
 
+            disp(model)
+            dips(C.M_NUM)
             fprintf("Done with model %i.\n", model.(C.M_NUM))
         end
     end
