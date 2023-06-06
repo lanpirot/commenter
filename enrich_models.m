@@ -17,6 +17,10 @@ function enrich_models(C)
         C.TUD,@en_fs.TUD,...
         C.CYCLOMATIC_COMP,@en_fs.CYCLOMATIC_COMP};
 
+    en_tuples = {
+        C.IS_LOADABLE,@en_fs.IS_LOADABLE,...
+        C.CYCLOMATIC_COMP,@en_fs.CYCLOMATIC_COMP};
+
     all_projects = jsondecode(fileread(C.all_models_json));
 
 
@@ -38,8 +42,15 @@ function all_projects = enrich(all_projects, en_tuple)
         project_models = all_projects(j).(C.MODELS);
         project_path = all_projects(j).(C.PROJECT_PATH);
         for i = 1:length(project_models)
+
+
             model = project_models(i);
             warning('off','all');
+
+            if strcmp(en_tuple{1}, "cyclomatic_complexity") && model.m_num ~= 242
+                continue
+            end
+
             
             fprintf("Enriching model %i with %s\n", model.(C.M_NUM), new_field)
             all_projects(j).(C.MODELS)(i).(new_field) = en_template(en_tuple, all_projects(j), model);

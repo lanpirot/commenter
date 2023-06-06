@@ -199,7 +199,7 @@ classdef enrich_models_container
             end
 
             en = days(LastChangeDate - CreationDate);
-        end        
+        end
 
         function en = IS_LOADABLE(~, ~)
             global C
