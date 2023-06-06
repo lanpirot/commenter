@@ -48,9 +48,9 @@ function all_projects = enrich(all_projects, en_tuple)
             warning('off','all');
 
             %if model.m_num < 400
-            %if model.m_num < 2717
-            %    continue
-            %end
+            if model.m_num < 2717
+                continue
+            end
 
             if strcmp(en_tuple{1}, C.CYCLOMATIC_COMP) && ismember(model.m_num, [242, 399])
                 continue
