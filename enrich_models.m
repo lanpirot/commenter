@@ -1,4 +1,4 @@
-function enrich_models(C, dont_analyze_cyclo_models)
+function enrich_models(C)
     warning('off','all')
     format compact
 
@@ -17,9 +17,9 @@ function enrich_models(C, dont_analyze_cyclo_models)
         C.TUD,@en_fs.TUD,...
         C.CYCLOMATIC_COMP,@en_fs.CYCLOMATIC_COMP};
 
-    en_tuples = {
-        C.IS_LOADABLE,@en_fs.IS_LOADABLE,...
-        C.CYCLOMATIC_COMP,@en_fs.CYCLOMATIC_COMP};
+    %en_tuples = {
+    %    C.IS_LOADABLE,@en_fs.IS_LOADABLE,...
+    %    C.CYCLOMATIC_COMP,@en_fs.CYCLOMATIC_COMP};
 
     all_projects = jsondecode(fileread(C.all_models_json));
 
@@ -27,14 +27,14 @@ function enrich_models(C, dont_analyze_cyclo_models)
     for i = 1:2:length(en_tuples)
         en_tuple = [en_tuples(i), en_tuples(i+1)];
         all_projects = maybe_init(all_projects, en_tuple{1});
-        all_projects = enrich(all_projects, en_tuple, dont_analyze_cyclo_models);
+        all_projects = enrich(all_projects, en_tuple);
         hfs.saveit(all_projects, C.all_models_json);
         hfs.make_pretty(C.all_models_json);
     end
     fprintf("Model enrichment done.\n\n")
 return
 
-function all_projects = enrich(all_projects, en_tuple, dont_analyze_cyclo_models)
+function all_projects = enrich(all_projects, en_tuple)
     global C
     new_field = en_tuple{1};
 
@@ -47,11 +47,10 @@ function all_projects = enrich(all_projects, en_tuple, dont_analyze_cyclo_models
             model = project_models(i);
             warning('off','all');
 
-            if model.m_num < max(dont_analyze_cyclo_models)
-                continue
-            end
+            dont_analyze_models = [2718, 3705, 6150, 6151, 6807, 6808, 6809, 8839, 8931]; %opening these models causes environmenttal/global variables to get cleared. We skip them
+            dont_analyze_cyclo_models = []; %while analyzing them, cyclomatic complexity might cause segmentation faults and kill the script. We skip them
 
-            if (strcmp(en_tuple{1}, C.CYCLOMATIC_COMP) && ismember(model.m_num, dont_analyze_cyclo_models)) || ismember(model.m_num, [2718, 3705, 6150, 6151, 6807, 6808, 6809, 8839, 8931])
+            if (strcmp(en_tuple{1}, C.CYCLOMATIC_COMP) && ismember(model.m_num, dont_analyze_cyclo_models)) || ismember(model.m_num, dont_analyze_models)
                 continue
             end
 
