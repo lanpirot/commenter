@@ -1,4 +1,4 @@
-function complete_script(mini, maxi)
+function mine_sl_comments(mini, maxi)
     warning('off','all')
     format compact
 

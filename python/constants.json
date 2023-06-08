@@ -1,5 +1,6 @@
 {
-  "sl_jsonfile":"C:\\svns\\alex projects\\commenter\\sl_out\\all_models.json",
+  "sl_jsonfile":"C:\\svns\\alex projects\\commenter\\sl_out\\allmodels.json",
+  "sl_cleanedfile": "C:\\svns\\alex projects\\commenter\\sl_out\\all_models_cleaned.json",
   "m_jsonfile":"C:\\svns\\alex projects\\commenter\\m_out\\m_comments.json",
   "m_class": "C:\\svns\\alex projects\\commenter\\m_out\\m_comments_class.csv",
   "m_no_class": "C:\\svns\\alex projects\\commenter\\m_out\\m_comments_no_class.csv",
