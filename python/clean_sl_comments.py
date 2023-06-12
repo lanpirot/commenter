@@ -38,7 +38,7 @@ def unify(doc_item, documentation_text, type):
     #else:
     #    out_item["Name"] = doc_item["Name"]
     out_item["Type"] = type
-    out_item["Level"] = doc_item["Parent"].count("/") + 1
+    out_item["Level"] = doc_item["Parent"].replace("//", "/").count("/") + 1
     out_item["doc"] = documentation_text
     out_item["length"] = len(documentation_text)
     return out_item

@@ -57,5 +57,14 @@ classdef Helper_functions
             file_path = file_path(34:end);
             file_path = Constants.all_projects_path + file_path;
         end
+
+        function depth = get_hierarchy_depth(handle)
+            parent = get_param(handle, "Parent");
+            if strcmp(parent, '')
+                depth = 0;
+            else
+                depth = count(parent.replace("//", "/"), '/') + 1;
+            end
+        end
     end
 end

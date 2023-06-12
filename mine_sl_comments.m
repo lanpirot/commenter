@@ -39,5 +39,5 @@ end
 
 
 %matlab -nodisplay -nosplash -nodesktop -r "run('filter_simulink_projects.m');exit;"
-%matlab -nodisplay -nosplash -nodesktop -r "run('complete_script(1,3)');exit;"
-%matlab -nodisplay -nosplash -nodesktop -r "run('complete_script(1,200)');run('analyze_json()');exit;"
+%matlab -nodisplay -nosplash -nodesktop -r "run('mine_sl_comments(1,3)');exit;"
+%matlab -nodisplay -nosplash -nodesktop -r "run('mine_sl_comments(1,200)');run('analyze_json()');exit;"

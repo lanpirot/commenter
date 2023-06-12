@@ -10,6 +10,23 @@ import seaborn as sns # For pairplots and heatmaps
 import matplotlib.pyplot as plt
 
 
+import re
+
+round_to = 4
+
+def str_round(match):
+    return str(round(eval(match.group()), round_to))
+
+def print(*args, **kwargs):
+    if len(args):
+        args = list(args)
+        for i, text in enumerate(args):
+            text = str(text)
+            if re.search(r"([-+]?\d*\.?\d+|[-+]?\d+)", text):
+                args[i] = re.sub(r"([-+]?\d*\.?\d+|[-+]?\d+)", str_round, text)
+
+    return __builtins__.print(*args, **kwargs)
+
 def zero():
     return 0
 
@@ -22,19 +39,12 @@ def display_correlation(df):
     plt.figure(figsize=(10,6))
     heatmap = sns.heatmap(df.corr(), vmin=-1, vmax=1, annot=True)
     plt.title("Spearman Correlation")
+    plt.show()
     return r
 
-def plot_data_corr(df,title,color="green"):
-    r = display_correlation(df)
-    #fig, ax = plt.subplots(nrows=1, ncols=len(df.columns)-1,figsize=(14,3))
-    #for i in range(1,len(df.columns)):
-    #    ax[i-1].scatter(df["number_of_elements"],df.values[:,i],color=color)
-    #    ax[i-1].title.set_text(title[i] +'\n r = ' +
-    #                         "{:.2f}".format(r.values[0,i]))
-    #    ax[i-1].set(xlabel=df.columns[0],ylabel=df.columns[i])
-    #fig.subplots_adjust(wspace=.7)
-    plt.show()
-    return
+
+
+
 
 
 
@@ -88,17 +98,30 @@ def report_doc_types(models, cyclo_only):
 
 def report_doc_depths(models):
     print(f"Reporting depths for all models")
-    print("Depth Count Length(ave) Length(med)")
+    print("Depth, DocItems-per-Subsystem, DocItems-per-Elements, Length(ave), Length(med)")
 
-    level_count, level_length = defaultdict(zero), defaultdict(empty_list)
+    level_count, level_length, subs_per_depth, els_per_depth = defaultdict(zero), defaultdict(empty_list), defaultdict(zero), defaultdict(zero)
     for m in models:
         for d in m["blocks_with_documentation"]:
             level = d["Level"]
+            if level > 15:
+                print("")
             level_count[level] += 1
             level_length[level].append(d["length"])
+        if "subsystem_info" not in m or m["subsystem_info"] == "ERROR":
+            continue
+        subs = m["subsystem_info"]["SUB_HIST"]
+        els = m["subsystem_info"]["NUM_EL_DEPTHS"]
+        if isinstance(subs, int):
+            subs = [subs]
+            els = [els]
+        for i, s in enumerate(subs):
+            subs_per_depth[i] += subs[i]
+            els_per_depth[i] += els[i]
+
     for i in range(len(level_count) + 1):
         if level_count[i]:
-            print(i, level_count[i], mean(level_length[i]), median(level_length[i]))
+            print(f"{i}, {level_count[i]/max(subs_per_depth[i], 1)}, {level_count[i]/max(els_per_depth[i], 1)}, {mean(level_length[i])}, {median(level_length[i])}")
     print()
     return
 
@@ -134,7 +157,7 @@ def report_correlation(models, cc, cyclo):
                 skip = True
         if not skip:
             list2frame.append(tuple(m[c] for c in cc))
-    plot_data_corr(pd.DataFrame(list2frame, columns=cc), "Correlations", color="green")
+    display_correlation(pd.DataFrame(list2frame, columns=cc))
     return
 
 

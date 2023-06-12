@@ -74,10 +74,7 @@ classdef enrich_models_container
             end
             
             
-            block.HierarchyDepth = count(block.Parent, '/');
-            if ~strcmp(block.Parent, '')
-                block.HierarchyDepth = block.HierarchyDepth + 1;
-            end
+            block.HierarchyDepth = Helper_functions.get_hierarchy_depth(handle);
             try
                 ullr = enrich_models_container.get_position(block.Handle);
                 block.UL = ullr.ul;
@@ -139,7 +136,7 @@ classdef enrich_models_container
             subsystems = find_system(model,'LookUnderMasks','on','FindAll','on','FollowLinks','on','BlockType','SubSystem');
             for i=1:length(subsystems)
                 subsystem = subsystems(i);
-                depths(end + 1) = count(get_param(subsystem, "Parent"), '/') + 1;
+                depths(end + 1) = Helper_functions.get_hierarchy_depth(subsystem);
             end
             en.SUB_HIST = histcounts(depths);
             
@@ -148,7 +145,7 @@ classdef enrich_models_container
             num_el_depths(1) = length(find_system(model,'LookUnderMasks','on','FindAll','on','FollowLinks','on','SearchDepth',1));
             for i=1:length(subsystems)
                 subsystem = subsystems(i);
-                curr_depth = count(get_param(subsystem, "Parent"), '/') + 2;
+                curr_depth = Helper_functions.get_hierarchy_depth(subsystem) + 1;
                 num_el_depths(curr_depth) = num_el_depths(curr_depth) + length(find_system(subsystem,'LookUnderMasks','on','FindAll','on','FollowLinks','on','SearchDepth',1));
             end
             en.NUM_EL_DEPTHS = num_el_depths;
