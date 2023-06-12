@@ -20,8 +20,10 @@ function mine_sl_comments(mini, maxi)
     C = Helper_functions.create_constants(mini, maxi);
     C.all_projects = folder_list;
     
-    create_json(C)
-    enrich_projects(C)
+    if strcmp(C.FORCE_OVERWRITE, C.NONE)
+        create_json(C)
+        enrich_projects(C)
+    end
     enrich_models(C)
     fprintf("All done for projects %i-%i\n",mini,maxi);
 end

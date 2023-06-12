@@ -135,7 +135,7 @@ classdef enrich_models_container
 
         function en = SUBSYS_INFO(~, model)
             en = struct;
-            depths = [];
+            depths = [0];
             subsystems = find_system(model,'LookUnderMasks','on','FindAll','on','FollowLinks','on','BlockType','SubSystem');
             for i=1:length(subsystems)
                 subsystem = subsystems(i);
@@ -144,15 +144,16 @@ classdef enrich_models_container
             en.SUB_HIST = histcounts(depths);
             
             max_depth = length(en.SUB_HIST);
-            num_el_depths = zeros(1,max_depth);
+            num_el_depths = zeros(1, max_depth);
+            num_el_depths(1) = length(find_system(model,'LookUnderMasks','on','FindAll','on','FollowLinks','on','SearchDepth',1));
             for i=1:length(subsystems)
                 subsystem = subsystems(i);
-                curr_depth = count(get_param(subsystem, "Parent"), '/') + 1;
+                curr_depth = count(get_param(subsystem, "Parent"), '/') + 2;
                 num_el_depths(curr_depth) = num_el_depths(curr_depth) + length(find_system(subsystem,'LookUnderMasks','on','FindAll','on','FollowLinks','on','SearchDepth',1));
             end
             en.NUM_EL_DEPTHS = num_el_depths;
             en.SUB_NUM = length(subsystems);
-        end
+end
         
         function en = CYCLOMATIC_COMP(~, model)
             metric_engine = slmetric.Engine();

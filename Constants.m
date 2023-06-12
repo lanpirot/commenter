@@ -17,8 +17,7 @@ classdef Constants
         NO_TODO = "NOTHING_TODO"
         
         NONE = ""
-        OVERWRITE = Constants.NO
-        FORCE_OVERWRITE = Constants.CYCLOMATIC_COMP
+        FORCE_OVERWRITE = Constants.SUBSYS_INFO  %this field will be overwritten, choose 'Constants.NONE' if you don't already have a 'allmodels.json' file
         
         
         

@@ -67,8 +67,8 @@ return
 
 function en = en_template(en_tuple, project, model)
     global C
-    en = C.NO_TODO;
     field = en_tuple{1};
+    en = model.(field);    
     %if not openable: don't bother analyzing
     if strcmp(model.(C.IS_LOADABLE), C.ERROR) && ~strcmp(C.FORCE_OVERWRITE, C.IS_LOADABLE)
         return
@@ -79,7 +79,7 @@ function en = en_template(en_tuple, project, model)
         mf = "";
     end
 
-    if ~strcmp(mf,C.TODO) && strcmp(C.OVERWRITE,C.NO) && ~strcmp(field, C.FORCE_OVERWRITE)
+    if ~strcmp(mf,C.TODO) && ~strcmp(field, C.FORCE_OVERWRITE)
         return
     end
     %otherwise actually analyze and enrich

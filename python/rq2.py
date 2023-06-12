@@ -18,6 +18,7 @@ def empty_list():
 
 def display_correlation(df):
     r = df.corr(method="spearman")
+    r2 = df.calculate_
     plt.figure(figsize=(10,6))
     heatmap = sns.heatmap(df.corr(), vmin=-1, vmax=1, annot=True)
     plt.title("Spearman Correlation")
@@ -25,13 +26,13 @@ def display_correlation(df):
 
 def plot_data_corr(df,title,color="green"):
     r = display_correlation(df)
-    fig, ax = plt.subplots(nrows=1, ncols=len(df.columns)-1,figsize=(14,3))
-    for i in range(1,len(df.columns)):
-        #ax[i-1].scatter(df["X"],df.values[:,i],color=color)
-        ax[i-1].title.set_text(title[i] +'\n r = ' +
-                             "{:.2f}".format(r.values[0,i]))
-        ax[i-1].set(xlabel=df.columns[0],ylabel=df.columns[i])
-    fig.subplots_adjust(wspace=.7)
+    #fig, ax = plt.subplots(nrows=1, ncols=len(df.columns)-1,figsize=(14,3))
+    #for i in range(1,len(df.columns)):
+    #    ax[i-1].scatter(df["number_of_elements"],df.values[:,i],color=color)
+    #    ax[i-1].title.set_text(title[i] +'\n r = ' +
+    #                         "{:.2f}".format(r.values[0,i]))
+    #    ax[i-1].set(xlabel=df.columns[0],ylabel=df.columns[i])
+    #fig.subplots_adjust(wspace=.7)
     plt.show()
     return
 
@@ -120,12 +121,16 @@ def enrich_models(models):
             m["median_doc_chars"] = 0
     return models
 
-def report_correlation(models, cc):
+def report_correlation(models, cc, cyclo):
     list2frame = []
     for m in models:
         skip = False
         for c in cc:
-            if c not in m:
+            if c not in m or not m[c] or m[c] == "ERROR":
+                skip = True
+        if cyclo:
+            print(m["cyclomatic_complexity"])
+            if "cyclomatic_complexity" in m and type(m["cyclomatic_complexity"]) == str:
                 skip = True
         if not skip:
             list2frame.append(tuple(m[c] for c in cc))
@@ -136,10 +141,12 @@ def report_correlation(models, cc):
 def analyze(models):
     #report_doc_types(models, False)
     #report_doc_types(models, True)
-    #report_doc_depths(models)
+    report_doc_depths(models)
     models = enrich_models(models)
     correlation_candidates = ["number_of_elements", "number_of_subsystems", "number_of_documentation_items", "total_doc_chars", "mean_doc_chars", "median_doc_chars", "time_under_development"]
-    report_correlation(models, correlation_candidates)
+    #report_correlation(models, correlation_candidates, False)
+    correlation_candidates.append("cyclomatic_complexity")
+    report_correlation(models, correlation_candidates, True)
     return
 
 def main_loop(sl_jsonfile):
