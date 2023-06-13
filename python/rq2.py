@@ -5,6 +5,7 @@ from collections import defaultdict
 from statistics import median
 from statistics import mean
 
+import matplotlib
 import numpy
 from scipy.stats import spearmanr
 import pandas as pd
@@ -76,14 +77,15 @@ def report_doc_types(models, cyclo_only):
 
 def report_doc_depths(models):
     print(f"Reporting depths for all models")
-    print("Depth, DocItems-per-Subsystem, DocItems-per-Elements, Length(ave), Length(med), std-dev")
+    print("Depth, DocItems-per-Subsystem (overall), stddev-DpS (per model), DocItems-per-Element, stddev-DpE (per model), DocLength(ave), DocLength(med), stddev-DL")
 
-    level_count, level_length, subs_per_depth, els_per_depth = defaultdict(zero), defaultdict(empty_list), defaultdict(zero), defaultdict(zero)
+    level_count, subs_per_depth, els_per_depth = defaultdict(zero), defaultdict(zero), defaultdict(zero)
+    level_length, docs_per_sub, docs_per_el = defaultdict(empty_list), defaultdict(empty_list), defaultdict(empty_list)
     for m in models:
+        docs = defaultdict(zero)
         for d in m["blocks_with_documentation"]:
             level = d["Level"]
-            if level == 14:
-                print("")
+            docs[level] += 1
             level_count[level] += 1
             level_length[level].append(d["length"])
         if "subsystem_info" not in m or m["subsystem_info"] == "ERROR":
@@ -93,16 +95,15 @@ def report_doc_depths(models):
         if isinstance(subs, int):
             subs = [subs]
             els = [els]
-        els_per_depth[0] += 1 #!!DELETE AFTER NEXT RUN OF mine_sl_comments.m!!
         for i, s in enumerate(subs):
-            if i > 14:
-                print("")
             subs_per_depth[i] += subs[i]
-            els_per_depth[i+1] += els[i]
+            docs_per_sub[i] += [docs[i]/subs[i]]
+            els_per_depth[i] += els[i]
+            docs_per_el[i] += [docs[i]/subs[i]]
 
     for i in range(len(level_count) + 1):
         if level_count[i]:
-            print(f"{i}, {level_count[i]/subs_per_depth[i]:.2f}, {level_count[i]/els_per_depth[i]:.2f}, {mean(level_length[i]):.2f}, {median(level_length[i])}, {statistics.stdev((level_length[i])):.2f}")
+            print(f"{i}, {level_count[i]/subs_per_depth[i]:.2f}, {statistics.stdev(docs_per_sub[i]):.2f}, {level_count[i]/els_per_depth[i]:.2f}, {statistics.stdev(docs_per_el[i]):.2f}, {mean(level_length[i]):.2f}, {median(level_length[i])}, {statistics.stdev((level_length[i])):.2f}")
     print()
     return
 
@@ -126,16 +127,35 @@ def enrich_models(models):
     return models
 
 def display_correlation(df):
-    plt.figure(figsize=(10, 6))
-    heatmap = sns.heatmap(df, vmin=-1, vmax=1, annot=True, cmap='gnuplot', linewidth=.5, square=True)
-    plt.title("Spearman Correlation")
+    gnuplot = matplotlib.cm.get_cmap('gnuplot', 256)
+    newcolors = gnuplot(numpy.linspace(0, 1, 256))
+    gray = numpy.array([230 / 256, 230 / 256, 230 / 256, 1])
+    newcolors[91:167, :] = gray
+    newcmp = matplotlib.colors.ListedColormap(newcolors)
+
+
+
+    fig = plt.figure()
+    fig.set_size_inches(w=4.7747, h=4.7747) #4.7747in == \textwidth
+    heatmap = sns.heatmap(df, vmin=-1, vmax=1, annot=True, cmap=newcmp, linewidth=.5, square=True)
+    plt.title("Spearman Correlation (metrics are per model)")
+    #matplotlib.use("pgf")
+    #matplotlib.rcParams.update({
+    #    "pgf.texsystem": "pdflatex",
+    #    'font.family': 'serif',
+    #    'text.usetex': True,
+    #    'pgf.rcfonts': False,
+    #})
+
     plt.show()
+    #plt.savefig('correlations.pgf')
     return
 
 def report_correlation(models, cc):
     c1c2 = [[]]*len(cc)
     for i in range(len(c1c2)):
         c1c2[i] = [[]]*len(cc)
+    ma = 0
     for i1, c1 in enumerate(cc):
         for i2, c2 in enumerate(cc):
             for m in models:
@@ -143,7 +163,9 @@ def report_correlation(models, cc):
                     continue
                 c1c2[i1][i2] = c1c2[i1][i2] + [(m[c1], m[c2])]
             corr = spearmanr(pd.DataFrame(c1c2[i1][i2]))
-            if corr[1] < 0.01:
+            #if corr[1] < 0.001 and abs(corr[0]) >= 0.295:
+            if corr[1] < 0.05:
+                ma = max(ma, corr[1])
                 print(c1, c2)
                 print(corr[0], corr[1])
                 c1c2[i1][i2] = corr[0]
@@ -169,9 +191,9 @@ def report_correlation(models, cc):
 def analyze(models):
     #report_doc_types(models, False)
     #report_doc_types(models, True)
-    report_doc_depths(models)
+    #report_doc_depths(models)
     models = enrich_models(models)
-    correlation_candidates = ["number_of_elements", "number_of_subsystems", "number_of_documentation_items", "total_doc_chars", "mean_doc_chars", "median_doc_chars", "time_under_development","cyclomatic_complexity"]
+    correlation_candidates = ["number_of_elements", "number_of_subsystems", "cyclomatic_complexity", "time_under_development", "number_of_documentation_items", "total_doc_chars", "mean_doc_chars", "median_doc_chars"]
     report_correlation(models, correlation_candidates)
     return
 
