@@ -132,7 +132,7 @@ classdef enrich_models_container
 
         function en = SUBSYS_INFO(~, model)
             en = struct;
-            depths = [0];%the model root itself
+            depths = [-1, 0];%the model (for model descriptions), the model root subystem
             subsystems = find_system(model,'LookUnderMasks','on','FindAll','on','FollowLinks','on','BlockType','SubSystem');
             for i=1:length(subsystems)
                 subsystem = subsystems(i);
@@ -141,7 +141,7 @@ classdef enrich_models_container
             en.SUB_HIST = histcounts(depths);
             
             max_depth = length(en.SUB_HIST);
-            num_el_depths = zeros(1, max_depth+1);
+            num_el_depths = zeros(1, max_depth);
             num_el_depths(1) = 1;%the model root itself
             num_el_depths(2) = length(find_system(model,'LookUnderMasks','on','FindAll','on','FollowLinks','on','SearchDepth',1));
             for i=1:length(subsystems)
@@ -150,7 +150,7 @@ classdef enrich_models_container
                 num_el_depths(curr_depth) = num_el_depths(curr_depth) + length(find_system(subsystem,'LookUnderMasks','on','FindAll','on','FollowLinks','on','SearchDepth',1));
             end
             en.NUM_EL_DEPTHS = num_el_depths;
-            en.SUB_NUM = length(subsystems);
+            en.SUB_NUM = length(subsystems) + 1;
 end
         
         function en = CYCLOMATIC_COMP(~, model)
