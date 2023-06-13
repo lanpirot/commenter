@@ -1,31 +1,16 @@
 import json
+import statistics
 from pathlib import Path
 from collections import defaultdict
 from statistics import median
 from statistics import mean
 
-import numpy as np
+import numpy
+from scipy.stats import spearmanr
 import pandas as pd
 import seaborn as sns # For pairplots and heatmaps
 import matplotlib.pyplot as plt
 
-
-import re
-
-round_to = 4
-
-def str_round(match):
-    return str(round(eval(match.group()), round_to))
-
-def print(*args, **kwargs):
-    if len(args):
-        args = list(args)
-        for i, text in enumerate(args):
-            text = str(text)
-            if re.search(r"([-+]?\d*\.?\d+|[-+]?\d+)", text):
-                args[i] = re.sub(r"([-+]?\d*\.?\d+|[-+]?\d+)", str_round, text)
-
-    return __builtins__.print(*args, **kwargs)
 
 def zero():
     return 0
@@ -33,14 +18,7 @@ def zero():
 def empty_list():
     return []
 
-def display_correlation(df):
-    r = df.corr(method="spearman")
-    r2 = df.calculate_
-    plt.figure(figsize=(10,6))
-    heatmap = sns.heatmap(df.corr(), vmin=-1, vmax=1, annot=True)
-    plt.title("Spearman Correlation")
-    plt.show()
-    return r
+
 
 
 
@@ -98,13 +76,13 @@ def report_doc_types(models, cyclo_only):
 
 def report_doc_depths(models):
     print(f"Reporting depths for all models")
-    print("Depth, DocItems-per-Subsystem, DocItems-per-Elements, Length(ave), Length(med)")
+    print("Depth, DocItems-per-Subsystem, DocItems-per-Elements, Length(ave), Length(med), std-dev")
 
     level_count, level_length, subs_per_depth, els_per_depth = defaultdict(zero), defaultdict(empty_list), defaultdict(zero), defaultdict(zero)
     for m in models:
         for d in m["blocks_with_documentation"]:
             level = d["Level"]
-            if level > 15:
+            if level == 14:
                 print("")
             level_count[level] += 1
             level_length[level].append(d["length"])
@@ -115,13 +93,16 @@ def report_doc_depths(models):
         if isinstance(subs, int):
             subs = [subs]
             els = [els]
+        els_per_depth[0] += 1 #!!DELETE AFTER NEXT RUN OF mine_sl_comments.m!!
         for i, s in enumerate(subs):
+            if i > 14:
+                print("")
             subs_per_depth[i] += subs[i]
-            els_per_depth[i] += els[i]
+            els_per_depth[i+1] += els[i]
 
     for i in range(len(level_count) + 1):
         if level_count[i]:
-            print(f"{i}, {level_count[i]/max(subs_per_depth[i], 1)}, {level_count[i]/max(els_per_depth[i], 1)}, {mean(level_length[i])}, {median(level_length[i])}")
+            print(f"{i}, {level_count[i]/subs_per_depth[i]:.2f}, {level_count[i]/els_per_depth[i]:.2f}, {mean(level_length[i]):.2f}, {median(level_length[i])}, {statistics.stdev((level_length[i])):.2f}")
     print()
     return
 
@@ -144,21 +125,45 @@ def enrich_models(models):
             m["median_doc_chars"] = 0
     return models
 
-def report_correlation(models, cc, cyclo):
-    list2frame = []
-    for m in models:
-        skip = False
-        for c in cc:
-            if c not in m or not m[c] or m[c] == "ERROR":
-                skip = True
-        if cyclo:
-            print(m["cyclomatic_complexity"])
-            if "cyclomatic_complexity" in m and type(m["cyclomatic_complexity"]) == str:
-                skip = True
-        if not skip:
-            list2frame.append(tuple(m[c] for c in cc))
-    display_correlation(pd.DataFrame(list2frame, columns=cc))
+def display_correlation(df):
+    plt.figure(figsize=(10, 6))
+    heatmap = sns.heatmap(df, vmin=-1, vmax=1, annot=True, cmap='gnuplot', linewidth=.5, square=True)
+    plt.title("Spearman Correlation")
+    plt.show()
     return
+
+def report_correlation(models, cc):
+    c1c2 = [[]]*len(cc)
+    for i in range(len(c1c2)):
+        c1c2[i] = [[]]*len(cc)
+    for i1, c1 in enumerate(cc):
+        for i2, c2 in enumerate(cc):
+            for m in models:
+                if c1 not in m or not m[c1] or type(m[c1]) == str or c2 not in m or not m[c2] or type(m[c2]) == str:
+                    continue
+                c1c2[i1][i2] = c1c2[i1][i2] + [(m[c1], m[c2])]
+            corr = spearmanr(pd.DataFrame(c1c2[i1][i2]))
+            if corr[1] < 0.01:
+                print(c1, c2)
+                print(corr[0], corr[1])
+                c1c2[i1][i2] = corr[0]
+            else:
+                c1c2[i1][i2] = numpy.nan
+    display_correlation(pd.DataFrame(c1c2, columns=cc, index=cc))
+    return
+
+    # for m in models:
+    #     skip = False
+    #         if c1 not in m or not m[c1] or m[c1] == "ERROR":
+    #             skip = True
+    #     if cyclo:
+    #         #print(m["cyclomatic_complexity"])
+    #         if "cyclomatic_complexity" in m and type(m["cyclomatic_complexity"]) == str:
+    #             skip = True
+    #     if not skip:
+    #         list2frame.append(tuple(m[c] for c in cc))
+    # display_correlation(pd.DataFrame(list2frame, columns=cc))
+    # return
 
 
 def analyze(models):
@@ -166,10 +171,8 @@ def analyze(models):
     #report_doc_types(models, True)
     report_doc_depths(models)
     models = enrich_models(models)
-    correlation_candidates = ["number_of_elements", "number_of_subsystems", "number_of_documentation_items", "total_doc_chars", "mean_doc_chars", "median_doc_chars", "time_under_development"]
-    #report_correlation(models, correlation_candidates, False)
-    correlation_candidates.append("cyclomatic_complexity")
-    report_correlation(models, correlation_candidates, True)
+    correlation_candidates = ["number_of_elements", "number_of_subsystems", "number_of_documentation_items", "total_doc_chars", "mean_doc_chars", "median_doc_chars", "time_under_development","cyclomatic_complexity"]
+    report_correlation(models, correlation_candidates)
     return
 
 def main_loop(sl_jsonfile):

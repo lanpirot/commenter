@@ -63,7 +63,7 @@ classdef Helper_functions
             if strcmp(parent, '')
                 depth = 0;
             else
-                depth = count(parent.replace("//", "/"), '/') + 1;
+                depth = count(string(parent).replace("//", "/"), '/') + 1;
             end
         end
     end
