@@ -21,7 +21,7 @@ def clean_docblock(db):
         original = ud["content"]
         maybe_rtf = clean_rtf(ud["content"])
         if len(original) > 1.25 * len(maybe_rtf):
-            maybe_rtf = maybe_rtf.replace(" " * 100, " ").replace(" " * 10, " ").replace(" " * 10, " ").replace(" " * 5, " ").replace(" " * 2, " ")                  #hacky way of 'mitigatin' weird rtftotext output
+            maybe_rtf = maybe_rtf
             return maybe_rtf
         return ud["content"]
     if ud["format"] == "HTML":
@@ -38,9 +38,9 @@ def unify(doc_item, documentation_text, type):
     #else:
     #    out_item["Name"] = doc_item["Name"]
     out_item["Type"] = type
-    out_item["Level"] = doc_item["Parent"].replace("//", "/").count("/") + 1    #doc_Item["HierarchyDepth"]
+    out_item["Level"] = doc_item["Parent"].replace("//", "").count("/") + 1    #doc_Item["HierarchyDepth"]
     out_item["doc"] = documentation_text
-    out_item["length"] = len(documentation_text)
+    out_item["length"] = len(documentation_text.replace(" " * 100, " ").replace(" " * 10, " ").replace(" " * 10, " ").replace(" " * 5, " ").replace(" " * 3, " "))
     return out_item
 
 def clean_doc_item(doc_item):

@@ -77,7 +77,7 @@ def report_doc_types(models, cyclo_only):
 
 def report_doc_depths(models):
     print(f"Reporting depths for all models")
-    print("Depth, DocItems-per-Subsystem (overall), stddev-DpS (per model), DocItems-per-Element, stddev-DpE (per model), DocLength(ave), DocLength(med), stddev-DL")
+    print("Depth, DocItems-at-Depth, DocItems-per-Subsystem (overall), stddev-DpS (per model), DocItems-per-Element, stddev-DpE (per model), DocLength(ave), DocLength(med), stddev-DL")
 
     level_count, subs_per_depth, els_per_depth = defaultdict(zero), defaultdict(zero), defaultdict(zero)
     level_length, docs_per_sub, docs_per_el = defaultdict(empty_list), defaultdict(empty_list), defaultdict(empty_list)
@@ -88,6 +88,8 @@ def report_doc_depths(models):
             docs[level] += 1
             level_count[level] += 1
             level_length[level].append(d["length"])
+            if d["length"] != round(d["length"]):
+                print("")
         if "subsystem_info" not in m or m["subsystem_info"] == "ERROR":
             continue
         subs = m["subsystem_info"]["SUB_HIST"]
@@ -101,9 +103,14 @@ def report_doc_depths(models):
             els_per_depth[i] += els[i]
             docs_per_el[i] += [docs[i]/subs[i]]
 
+    all_level_counts = sum([level_count[l] for l in level_count])
+    all_subs_per_depth = sum([subs_per_depth[l] for l in subs_per_depth])
+    all_els_per_depth = sum([els_per_depth[l] for l in els_per_depth])
+    all_level_length = sum([sum(level_length[d]) for d in level_length])
+    print(f"overall, {all_level_counts}, {all_level_counts/all_subs_per_depth:.2f}, ..., {all_level_counts/all_els_per_depth:.3f}, {all_level_length/all_level_counts:.2f}, ..., ...")
     for i in range(len(level_count) + 1):
         if level_count[i]:
-            print(f"{i}, {level_count[i]/subs_per_depth[i]:.2f}, {statistics.stdev(docs_per_sub[i]):.2f}, {level_count[i]/els_per_depth[i]:.2f}, {statistics.stdev(docs_per_el[i]):.2f}, {mean(level_length[i]):.2f}, {median(level_length[i])}, {statistics.stdev((level_length[i])):.2f}")
+            print(f"{i}, {level_count[i]}, {level_count[i]/subs_per_depth[i]:.2f}, {statistics.stdev(docs_per_sub[i]):.2f}, {level_count[i]/els_per_depth[i]:.3f}, {statistics.stdev(docs_per_el[i]):.2f}, {mean(level_length[i]):.2f}, {median(level_length[i])}, {statistics.stdev((level_length[i])):.2f}")
     print()
     return
 
@@ -193,7 +200,10 @@ def analyze(models):
     report_doc_types(models, True)
     report_doc_depths(models)
     models = enrich_models(models)
-    correlation_candidates = ["number_of_elements", "number_of_subsystems", "cyclomatic_complexity", "time_under_development", "number_of_documentation_items", "total_doc_chars", "mean_doc_chars", "median_doc_chars"]
+    #correlation_candidates = ["number_of_elements", "number_of_subsystems", "cyclomatic_complexity", "time_under_development", "number_of_documentation_items", "total_doc_chars", "mean_doc_chars", "median_doc_chars"]
+    correlation_candidates = ["number_of_elements", "number_of_subsystems", "cyclomatic_complexity",
+                              "time_under_development", "number_of_documentation_items",
+                              "mean_doc_chars", "median_doc_chars"]
     report_correlation(models, correlation_candidates)
     return
 
