@@ -48,7 +48,8 @@ function all_projects = enrich(all_projects, en_tuple)
             warning('off','all');
 
             dont_analyze_models = [2718, 3705, 6150, 6151, 6807, 6808, 6809, 8839, 8931]; %opening these models causes environmenttal/global variables to get cleared. We skip them
-            dont_analyze_cyclo_models = [242, 399, 817, 820, 898, 899, 958, 959, 960, 961, 962, 963, 965, 966, 1221, 1967, 1974, 2032, 2035, 2078, 2079, 2080, 2082, 2083, 2084, 2085, 2087, 2272, 2682, 2763, 2996, 3368, 3504, 3835, 3855, 4134, 4242, 4527, 4704, 4920, 5012, 5015, 5206, 5368, 5408, 5814, 5852, 6006, 6036, 6076, 6278, 6358, 6761, 6762, 6906, 6969, 6970, 6979, 7173, 7373, 7424, 7574, 7579, 8113, 8115, 8116, 8855, 8856, 9006, 9070]; %while analyzing them, cyclomatic complexity might cause segmentation faults and kill the script. We skip them
+            dont_analyze_cyclo_models = [242, 399, 817, 820, 898, 899, 958, 959, 960, 961, 962, 963, 965, 966, 1221, 1967, 1974, 2032, 2035, 2078, 2079, 2080, 2082, 2083, 2084, 2085, 2087, 2272, 2682, 2763, 2996, 3368, 3504, 3835, 3855, 4134, 4242, 4527, 4704, 4920, 5012, 5015, 5206, 5368, 5408, 5814, 5852, 6006, 6036, 6076, 6278, 6358, 6761, 6762, 6906, 6969, 6970, 6979, 7173, 7373, 7424, 7574, 7579, 8113, 8115, 8116, 8855, 8856, 9006, 9070]; 
+            %while analyzing them, cyclomatic complexity might cause unrecoverable segmentation faults and kill the script. We skip them
 
             if (strcmp(en_tuple{1}, C.CYCLOMATIC_COMP) && ismember(model.m_num, dont_analyze_cyclo_models)) || ismember(model.m_num, dont_analyze_models)
                 continue

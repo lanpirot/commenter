@@ -4,6 +4,8 @@ import json
 from bs4 import UnicodeDammit
 from pathlib import Path
 
+import distribution_analysis_sample
+import m_to_csv
 
 
 def gather_projects(path):
@@ -99,7 +101,11 @@ def gather_comments(model):
                 if comment_start < 0:
                     comment_start = line_no
                 is_class_comment = class_comment_possible
-                comment += line
+
+                if is_multi_comment:
+                    comment += line
+                else:
+                    comment += line.lstrip()
                 if is_multi_comment:
                     if is_multi_end(line):
                         is_multi_comment = False
@@ -129,6 +135,7 @@ def main_loop(repo_paths, outfile):
     p_num = 0
     m_num_with = 0
     m_num = 0
+    pwd = os.getcwd()
     for pp in repo_paths:
         projects = gather_projects(pp)
         for e, p in enumerate(projects):
@@ -145,7 +152,7 @@ def main_loop(repo_paths, outfile):
                     comment_list += [{"Project": str(project_path), "Model": str(model_path), "Model Number": m_num, "Classdef found": classdef, "Comments": cs}]
                 else:
                     comment_list += [{"Project": str(project_path), "Model": str(model_path), "Model Number": m_num, "Classdef found": classdef, "Comments": []}]
-
+    os.chdir(pwd)
     print(f"Analyzed {p_num} projects.")
     print(f"Found comments in {m_num_with} m-files of {m_num} m-files.")
     classdef = sum([1 for model in comment_list if model["Classdef found"]])
@@ -164,5 +171,7 @@ if __name__ == '__main__':
     repo_paths = [Path(constants["github_models_path"]),
                   Path(constants["matlab_models_path"])]
     outfile = Path(constants["m_jsonfile"])
-    main_loop(repo_paths, outfile)
+    #main_loop(repo_paths, outfile)
+    #m_to_csv.m_to_csv()
+    distribution_analysis_sample.sample([Path(constants["m_class"]), Path(constants["m_no_class"])])
     print("All done!")

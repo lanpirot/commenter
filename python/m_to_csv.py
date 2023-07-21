@@ -26,12 +26,15 @@ def main_loop(json_file, csv_file, class_only):
     with open(json_file, "r") as json_file:
         projects = json.load(json_file)
         print_projects(csv_file, projects, class_only)
-
-if __name__ == '__main__':
+def m_to_csv():
     with open("constants.json", "r") as constants:
         constants = json.load(constants)
 
     json_file = Path(constants["m_jsonfile"])
     main_loop(json_file, Path(constants["m_class"]), True)
     main_loop(json_file, Path(constants["m_no_class"]), False)
+
+
+if __name__ == '__main__':
+    m_to_csv()
     print("All done!")

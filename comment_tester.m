@@ -1,12 +1,12 @@
-%open("C:\Users\boll\tmp\DEFLT.slx")
+open("C:\Users\boll\tmp\DEFLT.slx")
 %open('C:\svns\simucomp2\models\SLNET_v1\SLNET_v1\SLNET_GitHub/29702360/LeanPulse-SyD-master/src/matlab/demos/SyDdemo.mdl')
 %open("C:\svns\simucomp2\code\commenter\tmp.slx")
 
 
-open("SLNET/SLNET_GitHub/204030363/simulink_models-master/models/bitcrusher/BC.slx")
+%open("SLNET/SLNET_GitHub/204030363/simulink_models-master/models/bitcrusher/BC.slx")
 modelName = "DEFLT";
-modelName = "SyDdemo";
-modelName = "BC";
+%modelName = "SyDdemo";
+%modelName = "BC";
 handles = find_system(modelName,'LookUnderMasks','on','RegExp','on','FindAll','on','FollowLinks','on','Type','annotation|block');
 
 
@@ -31,7 +31,7 @@ function block = all_info_of_block(handle)
     block = struct;
     block.Handle = handle;
     param_list = ["Type","BlockType","Description","Parent","Orientation","ForegroundColor","BackgroundColor","DropShadow","FontAngle","FontName","FontSize","FontWeight","Name","NamePlacement","NameLocation","ShowName","HideAutomaticName","Mask","MaskDisplay","MaskDisplayString","MaskType","versinfo_data","versinfo_string","Selected","Open","Tag","UserData","Commented","Permission","Text"];
-
+    params = get_param(block.Handle,'DialogParameters')
     for p=1:numel(param_list)
         param = param_list(p);
         try

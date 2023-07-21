@@ -9,7 +9,8 @@ csvs_unionized_sampled/
 python/.idea/
 python/venv/
 slprj/
-m_out
+m_out/
+sl_out/
 samples/
 system_constants.m
 

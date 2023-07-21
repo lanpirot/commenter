@@ -197,7 +197,7 @@ def report_correlation(models, cc):
 
 def analyze(models):
     report_doc_types(models, False)
-    report_doc_types(models, True)
+    #report_doc_types(models, True)
     report_doc_depths(models)
     models = enrich_models(models)
     #correlation_candidates = ["number_of_elements", "number_of_subsystems", "cyclomatic_complexity", "time_under_development", "number_of_documentation_items", "total_doc_chars", "mean_doc_chars", "median_doc_chars"]

@@ -114,9 +114,13 @@ def main_loop(sl_jsonfile, sl_cleanedfile):
     with open(sl_cleanedfile, "w+", encoding="utf-8") as file:
         json.dump(projects, file, ensure_ascii=False, indent=3)
 
-if __name__ == '__main__':
+def clean():
     with open("constants.json", "r") as constants:
         constants = json.load(constants)
 
     main_loop(Path(constants["sl_jsonfile"]), Path(constants["sl_cleanedfile"]))
+
+
+if __name__ == '__main__':
+    clean()
     print("All done!")
