@@ -1,4 +1,5 @@
 import json
+import csv
 from pathlib import Path
 
 import clean_sl_comments
@@ -12,24 +13,32 @@ def accu(m):
     return lines
 
 def accu_projects(models, cyclo):
-    lines = "Type,Level,Length,Text\n"
-    for m in models:
+    doc_items = []
+    for e, m in enumerate(models):
         if (not cyclo or isinstance(m["cyclomatic_complexity"], int)) and isinstance(m["blocks_with_documentation"], list):
-            lines += accu(m)
-    return lines
+            docs = m["blocks_with_documentation"]
+            for d in docs:
+                doc_items.append([d["Type"], d["Level"], d["length"], d["doc"].strip()])
+    return doc_items
 
 def main_loop(sl_cleaned, sl_accu, sl_accu_cyclo):
+    header = ["Type", "Level", "Length", "Text"]
     with open(sl_cleaned, "r", encoding="utf-8") as json_file:
         models = json.load(json_file, strict=False)
-        lines = accu_projects(models, False)
-        lines_cyclo = accu_projects(models, True)
+        docitems = accu_projects(models, False)
+        docitems_cyclo = accu_projects(models, True)
 
-    with open(sl_accu, "w+", encoding="utf-8") as file:
-        file.write(lines)
+
+    with open(sl_accu, "w", encoding="utf-8", newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(header)
+        writer.writerows(docitems)
 
 
     with open(sl_accu_cyclo, "w+", encoding="utf-8") as file:
-        file.write(lines_cyclo)
+        writer = csv.writer(file)
+        writer.writerow(header)
+        writer.writerows(docitems_cyclo)
 
 
 if __name__ == '__main__':
