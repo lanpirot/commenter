@@ -86,21 +86,23 @@ def main_loop(files_samplesizes, outprefix):
     save_sample = Path(str(outprefix)+"sampled.csv")
     df.to_csv(save_sample, sep=",", mode="w+")
     print(f"{save_sample} done.")
+    return df
 
 def sample(files):
     with open("constants.json", "r") as constants:
         constants = json.load(constants)
     main_loop(files, Path(constants["m_prefix"]))
+    return df
 
 
 if __name__ == '__main__':
     with open("constants.json", "r") as constants:
         constants = json.load(constants)
-    #files = [Path(constants["m_class"]),
-    #                      Path(constants["m_no_class"])]
-    #main_loop(files, Path(constants["m_prefix"]))
-
 
     files = [Path(constants["sl_accumulated"])]
-    main_loop(files, constants["sl_prefix"])
+    df = main_loop(files, constants["sl_prefix"])
+
+    for type in ["annotation", "docblock", "model_description", "description"]:
+        print("Unique number of " + type + f": {len(df[(df['Type'] == type)])}")
+
     print("All done!")

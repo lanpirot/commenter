@@ -34,7 +34,6 @@ def main_loop(sl_cleaned, sl_accu, sl_accu_cyclo):
         writer.writerow(header)
         writer.writerows(docitems)
 
-
     with open(sl_accu_cyclo, "w+", encoding="utf-8") as file:
         writer = csv.writer(file)
         writer.writerow(header)
