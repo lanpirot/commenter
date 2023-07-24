@@ -70,7 +70,7 @@ def main_loop(files_samplesizes, outprefix):
     for type in set(df['Type']):
         sub_df = df[(df['Type'] == type)]
         print("Number of " + type + f": {len(sub_df)}")
-        sub_df.drop_duplicates(subset="Text")
+        sub_df = sub_df.drop_duplicates(subset="Text")
         print("Unique number of " + type + f": {len(sub_df)}")
 
     print(f"Number of items: {len(df)}")
