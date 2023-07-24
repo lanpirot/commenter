@@ -1,7 +1,17 @@
 = README
 
 This package was tested with MatlabR2023a and Python3.7
-
+Apart from that, make sure you have the following pip(3) packages installed:
+- pandas
+- scipy
+- bs4
+- html2text
+- striprtf
+- matplotlib
+- seaborn
+- numpy
+- pathlib
+- statistics
 
 
 
