@@ -66,12 +66,19 @@ def main_loop(files_samplesizes, outprefix):
         df2 = pandas.read_csv(str(csv_file))
         df = df.append(df2)
 
+    if "Type" in df:
+        key = "Type"
+        type_set = set(df[key])
+    else:
+        key = "Class_Comment"
+        type_set = set(df[key])
+        print("Class_Comment ="+str(True))
 
-    for type in set(df['Type']):
-        sub_df = df[(df['Type'] == type)]
-        print("Number of " + type + f": {len(sub_df)}")
+    for type in type_set:
+        sub_df = df[(df[key] == type)]
+        print("Number of " + str(type) + f": {len(sub_df)}")
         sub_df = sub_df.drop_duplicates(subset="Text")
-        print("Unique number of " + type + f": {len(sub_df)}")
+        print("Unique number of " + str(type) + f": {len(sub_df)}")
 
     print(f"Number of items: {len(df)}")
     df = df.drop_duplicates(subset="Text")
@@ -83,9 +90,9 @@ def main_loop(files_samplesizes, outprefix):
     df = clean(df)
 
     df = df.sample(sample_size)
-    for type in set(df['Type']):
-        sub_df = df[(df['Type'] == type)]
-        print("Sample size of " + type + f": {len(sub_df)}")
+    for type in set(df[key]):
+        sub_df = df[(df[key] == type)]
+        print("Sample size of " + str(type) + f": {len(sub_df)}")
     df.index.name = "sampled_row_number"
     get_histograms(df, "_sampled", outprefix)
 
@@ -98,7 +105,7 @@ def sample(files):
     with open("constants.json", "r") as constants:
         constants = json.load(constants)
     main_loop(files, Path(constants["m_prefix"]))
-    return df
+    return
 
 
 if __name__ == '__main__':

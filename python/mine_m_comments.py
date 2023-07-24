@@ -171,7 +171,7 @@ if __name__ == '__main__':
     repo_paths = [Path(constants["github_models_path"]),
                   Path(constants["matlab_models_path"])]
     outfile = Path(constants["m_jsonfile"])
-    main_loop(repo_paths, outfile)
-    m_to_csv.m_to_csv()
+    #main_loop(repo_paths, outfile)
+    #m_to_csv.m_to_csv()
     distribution_analysis_sample.sample([Path(constants["m_class"]), Path(constants["m_no_class"])])
     print("All done!")
