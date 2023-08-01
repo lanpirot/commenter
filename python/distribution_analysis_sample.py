@@ -1,5 +1,5 @@
 import math
-
+import re
 import pandas
 import json
 import matplotlib.pyplot as plt
@@ -17,25 +17,6 @@ def count_lines(text):
     if type(text) is str:
         return text.count("\n") + 1
     return 0
-
-def clean_html(text):
-    if type(text) is not str or len(text) == 0:
-        return ""
-    if text[0] == "<" and (text[-1] == ">" or text.endswith(">\n") or text.endswith(">\r\n")):
-        return html2text.html2text(text)
-    return text
-
-def clean_rtf(text):
-    if type(text) is not str or len(text) == 0:
-        return ""
-    if text[0] == "{" and text[-1] == "}":
-        return rtf_to_text(text)
-    return text
-
-def clean(df):
-    df['Text'] = df.apply(lambda row: clean_html(row['Text']), axis=1)
-    df['Text'] = df.apply(lambda row: clean_rtf(row['Text']), axis=1)
-    return df
 
 def get_histograms(df, extra_text, out_file):
     df['char_count'] = df.apply(lambda row: count_chars(row['Text']), axis=1)
@@ -74,20 +55,24 @@ def main_loop(files_samplesizes, outprefix):
         type_set = set(df[key])
         print("Class_Comment ="+str(True))
 
+    n = 5
+
     for type in type_set:
         sub_df = df[(df[key] == type)]
+        print(str(type).upper())
+        print(sub_df["Text"].value_counts()[:n])
         print("Number of " + str(type) + f": {len(sub_df)}")
         sub_df = sub_df.drop_duplicates(subset="Text")
         print("Unique number of " + str(type) + f": {len(sub_df)}")
+        print("\n\n")
 
-    print(f"Number of items: {len(df)}")
+    print(f"Number of items: {len(df)} (+11 notes)")
     df = df.drop_duplicates(subset="Text")
-    print(f"Number of items without duplicates: {len(df)}")
+    print(f"Number of items without duplicates: {len(df)} (+6 notes)")
     sample_size = compute_sample_size(len(df))
     get_histograms(df, "", outprefix)
     print(f"Sampling {sample_size} items.")
 
-    df = clean(df)
 
     df = df.sample(sample_size)
     for type in set(df[key]):
@@ -96,7 +81,7 @@ def main_loop(files_samplesizes, outprefix):
     df.index.name = "sampled_row_number"
     get_histograms(df, "_sampled", outprefix)
 
-    df = clean(df)
+
     save_sample = Path(str(outprefix)+"sampled.csv")
     df.to_csv(save_sample, sep=",", mode="w+")
     print(f"{save_sample} done.")

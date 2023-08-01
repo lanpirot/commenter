@@ -1,34 +1,44 @@
 import json
+import re
 from pathlib import Path
 import html2text
 from striprtf.striprtf import rtf_to_text
 
+def shorten(text):
+    text = re.sub('(\\n( )*\\n( )*\\n( )*\\n( )*)+', '', text)
+    text = re.sub('(\\r\\n( )*\\r\\n( )*\\r\\n( )*\\r\\n( )*)+', '', text)
+    text = re.sub('(   ( )*)+', ' ', text)
+    return text
+
 def clean_html(text):
-    if (text[0] == "<" and (text[-1] == ">" or text.endswith(">\n") or text.endswith(">\r\n"))) or text.startswith("<!DOCTYPE HTML"):
-        return html2text.html2text(text)
+    if (text[0] == "<" and (text[-1] == ">" or text.endswith(">\n") and text.endswith(">\r\n"))) or text.startswith("<!DOCTYPE HTML"):
+        text = html2text.html2text(text)
     return text
 
 def clean_rtf(text):
     if text[0] == "{" and text[-1] == "}":
-        return rtf_to_text(text)
+        text = rtf_to_text(text)
     return text
 
 def clean_docblock(db):
     ud = db["UserData"]
     if isinstance(ud, str):
-        return ud
+        return shorten(ud)
+    text = ud["content"]
+    if not isinstance(text, str):
+        return ""
     if "format" not in ud or ud["format"] == "TXT":
-        original = ud["content"]
-        maybe_rtf = clean_rtf(ud["content"])
-        if len(original) > 1.25 * len(maybe_rtf):
-            maybe_rtf = maybe_rtf
-            return maybe_rtf
-        return ud["content"]
-    if ud["format"] == "HTML":
-        return clean_html(ud["content"])
-    if ud["format"] == "RTF":
-        return clean_rtf(ud["content"])
-    return ""
+        rt_try = clean_rtf(text)
+        if len(rt_try) < len(text):
+            text = rt_try
+        html_try = clean_html(text)
+        if len(html_try) < len(text):
+            text = html_try
+    elif ud["format"] == "HTML":
+        text = clean_html(text)
+    elif ud["format"] == "RTF":
+        text = clean_rtf(text)
+    return shorten(text)
 
 def unify(doc_item, documentation_text, type):
     out_item = dict()

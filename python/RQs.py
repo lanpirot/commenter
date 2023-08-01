@@ -78,9 +78,13 @@ def report_doc_types(models, cyclo_only):
 def report_doc_depths(models):
     print(f"Reporting depths for all models")
     print("Depth, DocItems-at-Depth, DocItems-per-Subsystem (overall), stddev-DpS (per model), DocItems-per-Element, stddev-DpE (per model), DocLength(ave), DocLength(med), stddev-DL")
+    #print("$depth$, $items$, $\\frac{items}{subsystem}$, $s(\\frac{i}{s})^1$, $\\frac{items}{elements}$, $s(\\frac{i}{e})$, $\\bar{x}(len)^2$, $M(len)^3$, $s(len)$")
+    print("$depth$, $items$, $cardinality$, $\\frac{items}{subsystem}$, $\\frac{items}{elements}$, $\\bar{x}(len)$, $M(len)$")
 
     level_count, subs_per_depth, els_per_depth = defaultdict(zero), defaultdict(zero), defaultdict(zero)
     level_length, docs_per_sub, docs_per_el = defaultdict(empty_list), defaultdict(empty_list), defaultdict(empty_list)
+    level_text = defaultdict(empty_list)
+
     for m in models:
         docs = defaultdict(zero)
         for d in m["blocks_with_documentation"]:
@@ -88,8 +92,7 @@ def report_doc_depths(models):
             docs[level] += 1
             level_count[level] += 1
             level_length[level].append(d["length"])
-            if d["length"] != round(d["length"]):
-                print("")
+            level_text[level].append(d["doc"])
         if "subsystem_info" not in m or m["subsystem_info"] == "ERROR":
             continue
         subs = m["subsystem_info"]["SUB_HIST"]
@@ -107,10 +110,22 @@ def report_doc_depths(models):
     all_subs_per_depth = sum([subs_per_depth[l] for l in subs_per_depth])
     all_els_per_depth = sum([els_per_depth[l] for l in els_per_depth])
     all_level_length = sum([sum(level_length[d]) for d in level_length])
-    print(f"overall, {all_level_counts}, {all_level_counts/all_subs_per_depth:.2f}, ..., {all_level_counts/all_els_per_depth:.3f}, {all_level_length/all_level_counts:.2f}, ..., ...")
+    #print(f"total, {all_level_counts}, {all_level_counts/all_subs_per_depth:.2f}, N/A, {all_level_counts/all_els_per_depth:.3f}, N/A, N/A, N/A, N/A")
     for i in range(len(level_count) + 1):
         if level_count[i]:
-            print(f"{i}, {level_count[i]}, {level_count[i]/subs_per_depth[i]:.2f}, {statistics.stdev(docs_per_sub[i]):.2f}, {level_count[i]/els_per_depth[i]:.3f}, {statistics.stdev(docs_per_el[i]):.2f}, {mean(level_length[i]):.2f}, {median(level_length[i])}, {statistics.stdev((level_length[i])):.2f}")
+            if i == 0:
+                add_text = "$^1$"
+            elif i == 1:
+                add_text = "$^2$"
+            else:
+                add_text = ""
+            if i == 0:
+                add_text2 = "$^1$"
+            else:
+                add_text2 = ""
+            #print(f"{i}, {level_count[i]}, {level_count[i]/subs_per_depth[i]:.2f}" + add_text + f", {statistics.stdev(docs_per_sub[i]):.2f}, {level_count[i]/els_per_depth[i]:.3f}" + add_text2 + f", {statistics.stdev(docs_per_el[i]):.2f}, {mean(level_length[i]):.2f}, {median(level_length[i])}, {statistics.stdev((level_length[i])):.2f}")
+            print(
+                f"{i}, {level_count[i]}, {len(set(level_text[i]))}, {level_count[i] / subs_per_depth[i]:.2f}" + add_text + f", {level_count[i] / els_per_depth[i]:.3f}" + add_text2 + f", {mean(level_length[i]):.2f}, {median(level_length[i])}")
     print()
     return
 
