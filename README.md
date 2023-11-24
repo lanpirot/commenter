@@ -15,7 +15,7 @@ Apart from that, make sure you have the following pip(3) packages installed:
 
 You will need a Simulink(+Matlab) collection, like (SLNet)[https://zenodo.org/records/5259648].
 
-
+All matlab scripts (.m) are part of this folder, python scripts are in `./python`.
 
 
 ## Adapt path and file constants
@@ -51,7 +51,7 @@ You will need a Simulink(+Matlab) collection, like (SLNet)[https://zenodo.org/re
 While some basic values, tables and figures of the paper already got produced by the scripts prior, 
 most will get produced with `RQs.py`.
 
-RQs.py will print the data for Fig. 3 into a file `fig3.csv`, all other data for figures 
+RQs.py will print the data for Fig. 3 into a file `./python/fig3.csv`, all other data for figures 
 or tables is print to the console.
 
 All other data of figures and tables is in `comment_analysis.xlsx`.
