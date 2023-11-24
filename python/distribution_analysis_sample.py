@@ -47,34 +47,19 @@ def main_loop(files_samplesizes, outprefix):
         df2 = pandas.read_csv(str(csv_file))
         df = df.append(df2)
 
-    if "Type" in df:
-        key = "Type"
-        type_set = set(df[key])
-    else:
-        key = "Class_Comment"
-        type_set = set(df[key])
-        print("Class_Comment ="+str(True))
-
-    n = 5
-
-    for type in type_set:
-        sub_df = df[(df[key] == type)]
-        print(str(type).upper())
-        print(sub_df["Text"].value_counts()[:n])
-        print("Number of " + str(type) + f": {len(sub_df)}")
-        sub_df = sub_df.drop_duplicates(subset="Text")
-        print("Unique number of " + str(type) + f": {len(sub_df)}")
-        print("\n\n")
-
-    print(f"Number of items: {len(df)} (+11 notes)")
+    print(f"Number of items: {len(df)} (+11 notes for Simulink)")
     df = df.drop_duplicates(subset="Text")
-    print(f"Number of items without duplicates: {len(df)} (+6 notes)")
+    print(f"Number of items without duplicates: {len(df)} (+6 notes in Simulink)")
     sample_size = compute_sample_size(len(df))
     get_histograms(df, "", outprefix)
     print(f"Sampling {sample_size} items.")
 
 
+
     df = df.sample(sample_size)
+    key = "Type"
+    if key not in list(df):
+        key = "Class_Comment"
     for type in set(df[key]):
         sub_df = df[(df[key] == type)]
         print("Sample size of " + str(type) + f": {len(sub_df)}")

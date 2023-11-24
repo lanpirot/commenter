@@ -9,7 +9,7 @@ def accu(m):
     docs = m["blocks_with_documentation"]
     lines = ""
     for d in docs:
-        lines += d["Type"] + "," + str(d["Level"]) + "," + str(d["length"]) + ',"' + str(d["doc"]).strip() + '"\n'
+        lines += d["Type"] + "," + str(d["Level"]) + "," + str(d["length"]) + ',"' + str(d["doc"]) + '"\n'
     return lines
 
 def accu_projects(models, cyclo):
@@ -18,7 +18,7 @@ def accu_projects(models, cyclo):
         if (not cyclo or isinstance(m["cyclomatic_complexity"], int)) and isinstance(m["blocks_with_documentation"], list):
             docs = m["blocks_with_documentation"]
             for d in docs:
-                doc_items.append([d["Type"], d["Level"], d["length"], d["doc"].strip()])
+                doc_items.append([d["Type"], d["Level"], d["length"], d["doc"]])
     return doc_items
 
 def main_loop(sl_cleaned, sl_accu, sl_accu_cyclo):

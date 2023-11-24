@@ -13,5 +13,6 @@
   "annotations": "C:\\svns\\alex projects\\commenter\\sl_out\\annotations.csv",
   "model_descriptions": "C:\\svns\\alex projects\\commenter\\sl_out\\model_descriptions.csv",
   "block_descriptions": "C:\\svns\\alex projects\\commenter\\sl_out\\block_descriptions.csv",
-  "doc_blocks": "C:\\svns\\alex projects\\commenter\\sl_out\\doc_blocks.csv"
+  "doc_blocks": "C:\\svns\\alex projects\\commenter\\sl_out\\doc_blocks.csv",
+  "type_set": {"model_description":"Model Descriptions", "description":"Element Descriptions", "annotation":"Annotations", "docblock":"DocBlocks","notes":"Notes", "True":"Class Comments", "False":"Other Comments"}
 }

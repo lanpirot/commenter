@@ -11,7 +11,7 @@ def shorten(text):
     return text
 
 def clean_html(text):
-    if (text[0] == "<" and (text[-1] == ">" or text.endswith(">\n") and text.endswith(">\r\n"))) or text.startswith("<!DOCTYPE HTML"):
+    if (text[0] == "<" and (text[-1] == ">" or text.endswith(">\n") or text.endswith(">\r\n"))) or text.startswith("<!DOCTYPE HTML"):
         text = html2text.html2text(text)
     return text
 
@@ -49,8 +49,10 @@ def unify(doc_item, documentation_text, type):
     #    out_item["Name"] = doc_item["Name"]
     out_item["Type"] = type
     out_item["Level"] = doc_item["Parent"].replace("//", "").count("/") + 1    #doc_Item["HierarchyDepth"]
+
+    documentation_text = shorten(documentation_text)
+    out_item["length"] = len(documentation_text)
     out_item["doc"] = documentation_text
-    out_item["length"] = len(documentation_text.replace(" " * 100, " ").replace(" " * 10, " ").replace(" " * 10, " ").replace(" " * 5, " ").replace(" " * 3, " "))
     return out_item
 
 def clean_doc_item(doc_item):
@@ -77,6 +79,7 @@ def enrich_model_with_doctype_counts(m):
 
 def maybe_append_description(items, descr):
     if descr:
+        descr = shorten(descr)
         items.append({"Handle":0, "Name":"", "Type":"model_description", "Level":0, "doc":descr, "length":len(descr)})
     return items
 def clean_model(m):
