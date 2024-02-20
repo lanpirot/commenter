@@ -3,6 +3,7 @@ import re
 from pathlib import Path
 import html2text
 from striprtf.striprtf import rtf_to_text
+import csv
 
 def shorten(text):
     text = re.sub('(\\n( )*\\n( )*\\n( )*\\n( )*)+', '', text)
@@ -82,7 +83,7 @@ def maybe_append_description(items, descr):
         descr = shorten(descr)
         items.append({"Handle":0, "Name":"", "Type":"model_description", "Level":0, "doc":descr, "length":len(descr)})
     return items
-def clean_model(m):
+def clean_model(m, pnum):
     doc_items = m["blocks_with_documentation"]
     if m["is_loadable"] != "YES" or doc_items == "ERROR":
         return m
@@ -102,6 +103,7 @@ def clean_model(m):
     m["number_of_elements"] = m["number_of_signal_lines"] + m["number_of_blocks"]
     del m["number_of_signal_lines"]
     del m["number_of_blocks"]
+    m["p_num"] = pnum
     #m = enrich_model_with_doctype_counts(m)
     return m
 
@@ -115,15 +117,33 @@ def clean_projects(projects):
         for m in models:
             models_tried += 1
             if m["is_loadable"] == "YES" and m["blocks_with_documentation"] != "ERROR":
-                cleaned_models.append(clean_model(m))
+                cleaned_models.append(clean_model(m, p["p_num"]))
                 models_analyzed += 1
     print(f"We tried to analyze {models_tried} models, and succeeded in {models_analyzed} models.")
     return cleaned_models
+
+def duplication_disaggregated(models):
+    project_comments = [[] for i in range(max([m["p_num"] for m in models]))]
+    for m in models:
+        for b in m["blocks_with_documentation"]:
+            project_comments[m["p_num"] - 1].append(b["doc"])
+    unique_vs_total = []
+    for pc in project_comments:
+        if len(pc) < 10:
+            continue
+        unique_vs_total.append((len(set(pc)), len(pc)))
+    filename = "duplication_disaggregated.csv"
+    with open(filename, "w", newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(['#unique comments', '#total comments'])
+        writer.writerows(unique_vs_total)
+    return
 
 def main_loop(sl_jsonfile, sl_cleanedfile):
     with open(sl_jsonfile, "r", encoding="utf-8") as json_file:
         projects = json.load(json_file, strict=False)
         projects = clean_projects(projects)
+        duplication_disaggregated(projects)
     with open(sl_cleanedfile, "w+", encoding="utf-8") as file:
         json.dump(projects, file, ensure_ascii=False, indent=3)
 
